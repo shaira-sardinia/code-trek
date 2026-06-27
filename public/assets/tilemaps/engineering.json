@@ -1,0 +1,158 @@
+{
+  "compressionlevel": -1,
+  "height": 8,
+  "infinite": false,
+  "layers": [
+    {
+      "data": [
+        0, 0, 0, 7873, 7873, 7873, 7873, 7874, 0, 0, 0, 0, 0, 0, 0, 7889, 7889, 7889, 7889, 7890, 0, 0, 0, 0, 7841,
+        7842, 7843, 7857, 7779, 7780, 7779, 7780, 7843, 7841, 7842, 7843, 7857, 7858, 7859, 7841, 7779, 7780, 7779,
+        7780, 7859, 7857, 7858, 7859, 7809, 7810, 7811, 7857, 7779, 7780, 7779, 7780, 7811, 7809, 7810, 7811, 7825,
+        7826, 7827, 7825, 7779, 7779, 7779, 7780, 7827, 7825, 7826, 7827, 7841, 7842, 7843, 7841, 7779, 7780, 7780,
+        7780, 7843, 7841, 7842, 7843, 7857, 7858, 7859, 7857, 7795, 7796, 7796, 7796, 7859, 7857, 7858, 7859
+      ],
+      "height": 8,
+      "id": 1,
+      "name": "floor",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 12,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        8966, 7874, 7874, 7874, 8963, 8964, 8965, 8966, 7873, 7874, 7873, 7874, 8982, 7890, 7890, 7890, 8979, 8980,
+        8981, 8982, 7889, 7890, 7889, 7890, 8998, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8262, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 8278, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      ],
+      "height": 8,
+      "id": 2,
+      "name": "walls",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 12,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        8971, 8972, 8973, 8974, 8217, 0, 0, 0, 8195, 10413, 7915, 7885, 8987, 8988, 8989, 8990, 8233, 0, 0, 0, 8211,
+        10429, 7931, 7932, 0, 0, 0, 0, 8995, 8996, 8997, 8998, 8227, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8243, 0, 0, 0, 0,
+        8642, 0, 0, 0, 8653, 8654, 0, 8259, 8649, 8650, 0, 0, 8658, 8355, 8360, 0, 8669, 8670, 0, 8275, 8665, 8666, 0,
+        8353, 8354, 8371, 8376, 0, 0, 0, 0, 9168, 9033, 9034, 9158, 8369, 8370, 8387, 8392, 0, 0, 8633, 8634, 9184,
+        9049, 9050, 9174
+      ],
+      "height": 8,
+      "id": 7,
+      "name": "objects",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 12,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8246, 8247, 8248, 8249, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      ],
+      "height": 8,
+      "id": 9,
+      "name": "target",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 12,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "nextlayerid": 10,
+  "nextobjectid": 1,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.12.2",
+  "tileheight": 48,
+  "tilesets": [
+    {
+      "columns": 16,
+      "firstgid": 1,
+      "image": "..\/spaceship.png",
+      "imageheight": 7680,
+      "imagewidth": 768,
+      "margin": 0,
+      "name": "spaceship",
+      "spacing": 0,
+      "tilecount": 2560,
+      "tileheight": 48,
+      "tilewidth": 48,
+      "transparentcolor": "#ff00ff"
+    },
+    {
+      "columns": 16,
+      "firstgid": 2561,
+      "image": "..\/spaceship.png",
+      "imageheight": 7680,
+      "imagewidth": 768,
+      "margin": 0,
+      "name": "spaceship",
+      "spacing": 0,
+      "tilecount": 2560,
+      "tileheight": 48,
+      "tilewidth": 48,
+      "transparentcolor": "#ff00ff"
+    },
+    {
+      "columns": 16,
+      "firstgid": 5121,
+      "image": "..\/spaceship.png",
+      "imageheight": 7680,
+      "imagewidth": 768,
+      "margin": 0,
+      "name": "spaceship",
+      "spacing": 0,
+      "tilecount": 2560,
+      "tileheight": 48,
+      "tilewidth": 48,
+      "transparentcolor": "#ff00ff"
+    },
+    {
+      "columns": 16,
+      "firstgid": 7681,
+      "image": "..\/spaceship.png",
+      "imageheight": 7680,
+      "imagewidth": 768,
+      "margin": 0,
+      "name": "spaceship",
+      "spacing": 0,
+      "tilecount": 2560,
+      "tileheight": 48,
+      "tilewidth": 48,
+      "transparentcolor": "#ff00ff"
+    },
+    {
+      "columns": 16,
+      "firstgid": 10241,
+      "image": "..\/spaceship.png",
+      "imageheight": 7680,
+      "imagewidth": 768,
+      "margin": 0,
+      "name": "spaceship",
+      "spacing": 0,
+      "tilecount": 2560,
+      "tileheight": 48,
+      "tilewidth": 48,
+      "transparentcolor": "#ff00ff"
+    }
+  ],
+  "tilewidth": 48,
+  "type": "map",
+  "version": "1.10",
+  "width": 12
+}

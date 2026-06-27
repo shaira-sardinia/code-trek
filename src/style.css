@@ -1,0 +1,477 @@
+@font-face {
+  font-family: "ProximaNova";
+  src: url("/assets/font/proxima-nova-light.ttf") format("truetype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "ProximaNova";
+  src: url("/assets/font/proxima-nova-regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "ProximaNova";
+  src: url("/assets/font/proxima-nova-semibold.ttf") format("truetype");
+  font-weight: 600;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+strong {
+  font-weight: 600;
+}
+
+.tip,
+.beat .tip strong {
+  font-weight: 300;
+  color: #6e7681;
+}
+
+body {
+  margin: 0;
+  background: #0d1117;
+  color: #e6e6e6;
+  font-family: "ProximaNova", system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+#app {
+  width: 1200px;
+  margin: 40px auto;
+  padding: 40px;
+  display: grid;
+  grid-template-columns: 576px 1fr;
+  grid-template-rows: auto 200px;
+  grid-template-areas:
+    "game editor"
+    "dialogue editor";
+  gap: 20px;
+  align-items: start;
+}
+
+#game-container {
+  grid-area: game;
+  background: #000;
+  border: 1px solid #2a2f3a;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 576px;
+  height: 384px;
+  align-self: start;
+  flex-shrink: 0;
+}
+
+#app.landing-active #game-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  border: none;
+  z-index: 100;
+}
+
+#game-container canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+#dialogue-panel {
+  grid-area: dialogue;
+  background: #161b22;
+  border: 1px solid #2a2f3a;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  transition: opacity 400ms ease 200ms;
+}
+
+#app.landing-active #dialogue-panel {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#app.landing-active.landing-exit #dialogue-panel {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#dialogue-text {
+  font-size: 16px;
+  line-height: 1.6;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+#dialogue-text::-webkit-scrollbar {
+  width: 6px;
+}
+
+#dialogue-text::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 3px;
+}
+
+#dialogue-text::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.beat {
+  margin: 0 0 12px 0;
+}
+
+.beat:last-child {
+  margin-bottom: 0;
+}
+
+.beat strong {
+  color: #e6edf3;
+  font-weight: 600;
+}
+
+.beat em {
+  color: #79c0ff;
+  font-style: italic;
+}
+
+.beat code {
+  font-family: "Menlo", "Consolas", monospace;
+  font-size: 13px;
+  background: #21262d;
+  color: #ff7b72;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+#dialogue-skip {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: #21262d;
+  color: #8b949e;
+  border: 1px solid #2a2f3a;
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease;
+}
+
+#dialogue-skip:hover {
+  background: #30363d;
+  color: #c9d1d9;
+}
+
+#dialogue-skip.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#editor-panel {
+  grid-area: editor;
+  background: #161b22;
+  border: 1px solid #2a2f3a;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-self: stretch;
+  position: relative;
+  transition: opacity 400ms ease 200ms;
+}
+
+#app.landing-active #editor-panel {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#app.landing-active.landing-exit #editor-panel {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#editor-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #2a2f3a;
+  flex-shrink: 0;
+}
+
+#level-title {
+  font-size: 14px;
+  color: #8b949e;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.show-solution-button {
+  background: none;
+  border: none;
+  color: #8b949e;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.show-solution-button:hover:not(:disabled) {
+  color: #c9d1d9;
+}
+
+.show-solution-button:disabled {
+  color: #3a4048;
+  cursor: not-allowed;
+}
+
+#run-button {
+  background: #238636;
+  color: white;
+  border: none;
+  padding: 6px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#run-button:hover:not(:disabled) {
+  background: #2ea043;
+}
+
+#run-button:disabled {
+  background: #30363d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+#editor-container {
+  flex: 1;
+  min-height: 200px;
+  background: #0d1117;
+}
+
+#console-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #0d1117;
+  border-top: 1px solid #2a2f3a;
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 200px;
+  z-index: 10;
+  transition: max-height 0.3s ease-out;
+}
+
+#console-panel.collapsed {
+  max-height: 36px;
+  transition: max-height 0.2s ease-in;
+}
+
+#console-toggle {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #2a2f3a;
+  color: #8b949e;
+  font-size: 12px;
+  font-family: inherit;
+  text-align: left;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+#console-toggle:hover {
+  background: #1c2128;
+  color: #c9d1d9;
+}
+
+#console-chevron {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 10px;
+}
+
+#console-panel:not(.collapsed) #console-chevron {
+  transform: rotate(90deg);
+}
+
+#console-panel.collapsed #console-output {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#console-output {
+  flex: 1;
+  min-height: 0;
+  padding: 12px 16px;
+  overflow-y: auto;
+  font-family: "Menlo", "Consolas", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 1;
+  transition: opacity 0.15s ease;
+}
+
+#console-output::-webkit-scrollbar {
+  width: 6px;
+}
+
+#console-output::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 3px;
+}
+
+#console-output:empty::before {
+  content: "Console output will appear here...";
+  color: #6e7681;
+  font-style: italic;
+}
+
+.console-log {
+  color: #c9d1d9;
+}
+.console-error {
+  color: #ff7b72;
+}
+.console-info {
+  color: #79c0ff;
+}
+
+/* ── End-of-demo summary overlay ───────────────────────────────────────────── */
+
+.end-of-demo-summary {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 14, 31, 0.97);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "ProximaNova", sans-serif;
+  color: #cdcfd6;
+}
+
+.end-of-demo-summary__panel {
+  background: #1a2233;
+  border: 2px solid #88aaff;
+  border-radius: 6px;
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.end-of-demo-summary__title {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.end-of-demo-summary__subtitle {
+  margin: 0 0 24px 0;
+  color: #88aaff;
+  text-align: center;
+  font-size: 14px;
+}
+
+.end-of-demo-summary__section {
+  margin-bottom: 20px;
+}
+
+.end-of-demo-summary__section h2 {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  color: #cdcfd6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.end-of-demo-summary__value {
+  margin: 0;
+  font-size: 18px;
+  font-family: monospace;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.end-of-demo-summary__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.end-of-demo-summary__table tr {
+  border-bottom: 1px solid #3a4453;
+}
+
+.end-of-demo-summary__table tr:last-child {
+  border-bottom: none;
+}
+
+.end-of-demo-summary__table td {
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.end-of-demo-summary__table td:first-child {
+  color: #cdcfd6;
+}
+
+.end-of-demo-summary__table td:last-child {
+  text-align: right;
+  font-family: monospace;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.end-of-demo-summary__button {
+  display: block;
+  margin: 24px auto 0;
+  padding: 12px 32px;
+  background: #2a5599;
+  color: #ffffff;
+  border: 2px solid #6699ff;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+
+.end-of-demo-summary__button:hover {
+  background: #3a6cb3;
+}
