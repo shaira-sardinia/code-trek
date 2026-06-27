@@ -7,10 +7,11 @@ import { TransmissionPanel } from "../ui/TransmissionPanel";
 import { isBridgeLevelConfig } from "../levels/types";
 import type { BridgeLevelConfig, ProgressionEntry, StationConfig } from "../levels/types";
 import type { LevelManager } from "../levels/LevelManager";
-import { runBridgeClassTest, runBridgeRelayTest } from "../core/Runner";
-import { playBobEffect } from "../utils/effects";
-import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters";
+import { runBridgeClassTest, runBridgeRelayTest } from "../core/runner/bridge";
+import { playBobEffect, addIdleBob } from "../utils/effects";
+import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters/registry";
 import { tileToPixel, TILE_SIZE } from "../utils/grid";
+import { EVENT_RUN_CODE, EVENT_CLOSE_LOGBOOK, EVENT_RUN_RESULT } from "../events";
 
 export interface BridgeSceneData {
   config: BridgeLevelConfig;
@@ -143,15 +144,15 @@ export class BridgeScene extends BaseGridScene {
 
     const onCloseLogbook = () => this.logbook?.close();
 
-    this.game.events.on("run-code", onRunCode);
+    this.game.events.on(EVENT_RUN_CODE, onRunCode);
     this.game.events.on("reset-level", onResetLevel);
-    this.game.events.on("close-logbook", onCloseLogbook);
+    this.game.events.on(EVENT_CLOSE_LOGBOOK, onCloseLogbook);
     this.levelManager.on("level-changed", onLevelChanged);
 
     this.events.on("shutdown", () => {
-      this.game.events.off("run-code", onRunCode);
+      this.game.events.off(EVENT_RUN_CODE, onRunCode);
       this.game.events.off("reset-level", onResetLevel);
-      this.game.events.off("close-logbook", onCloseLogbook);
+      this.game.events.off(EVENT_CLOSE_LOGBOOK, onCloseLogbook);
       this.levelManager.off("level-changed", onLevelChanged);
 
       this.captain?.destroy();
@@ -171,7 +172,7 @@ export class BridgeScene extends BaseGridScene {
     } else if (this.config.expectedClassName && this.config.stations) {
       this.runCrewStationTest(code);
     } else {
-      this.game.events.emit("run-result", { passed: false, consoleOutput: [] });
+      this.game.events.emit(EVENT_RUN_RESULT, { passed: false, consoleOutput: [] });
     }
   }
 
@@ -185,7 +186,7 @@ export class BridgeScene extends BaseGridScene {
 
     if (result.passed) playBobEffect(this, this.character, 8);
 
-    this.game.events.emit("run-result", {
+    this.game.events.emit(EVENT_RUN_RESULT, {
       passed: result.passed,
       resultLines: result.resultLines,
       consoleOutput: result.consoleOutput,
@@ -214,7 +215,7 @@ export class BridgeScene extends BaseGridScene {
 
     if (result.passed) playBobEffect(this, this.character, 8);
 
-    this.game.events.emit("run-result", {
+    this.game.events.emit(EVENT_RUN_RESULT, {
       passed: result.passed,
       resultLines: result.resultLines,
       consoleOutput: result.consoleOutput,
@@ -273,15 +274,7 @@ export class BridgeScene extends BaseGridScene {
         sprite.stop();
         sprite.setTexture(appearance.idleSpritesheetKey, idleFrameForFacing("up"));
         sprite.setDepth(endPos.y);
-        this.tweens.add({
-          targets: sprite,
-          y: endPos.y - 2,
-          duration: 600,
-          ease: "Sine.easeInOut",
-          yoyo: true,
-          repeat: -1,
-          delay: Math.random() * 600,
-        });
+        addIdleBob(this, sprite, endPos.y);
       },
     });
   }
@@ -301,15 +294,7 @@ export class BridgeScene extends BaseGridScene {
     sprite.setOrigin(0.5, 1);
     sprite.setDepth(pos.y);
 
-    this.tweens.add({
-      targets: sprite,
-      y: pos.y - 2,
-      duration: 600,
-      ease: "Sine.easeInOut",
-      yoyo: true,
-      repeat: -1,
-      delay: Math.random() * 600,
-    });
+    addIdleBob(this, sprite, pos.y);
 
     this.stationSprites.push(sprite);
   }

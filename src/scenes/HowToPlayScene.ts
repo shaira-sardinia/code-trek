@@ -12,7 +12,7 @@ export class HowToPlayScene extends Phaser.Scene {
     this.add.rectangle(cx, cy, this.scale.width, this.scale.height, 0x000000, 0.85).setDepth(0);
 
     const panelW = 360;
-    const panelH = 190;
+    const panelH = 278;
     const top = cy - panelH / 2;
 
     this.add.rectangle(cx, cy, panelW, panelH, 0x111827).setStrokeStyle(2, 0x5580cc).setDepth(5);
@@ -45,10 +45,16 @@ export class HowToPlayScene extends Phaser.Scene {
     };
 
     addSectionTitle("HOW TO PLAY");
+    y += 6;
     addBody("Write code in the editor on the right.");
     addBody("Click Run to execute it in the world.");
     addBody("Read the dialogue panel for your task.");
-    addBody("Show Solution reveals the answer, but");
-    addBody("you only have 2 chances throughout the game.");
+    y += 11;
+    addBody("Show Solution reveals a possible answer");
+    addBody("but you only have 2 chances throughout");
+    addBody("the game. There can be many ways to");
+    addBody("approach a problem.");
+    y += 11;
+    addBody("Currently only JavaScript is supported.", "#88aaff");
   }
 }

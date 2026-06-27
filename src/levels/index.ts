@@ -29,7 +29,7 @@ import { hangarOne } from "./hangar-one";
 import { hangarFirstContact } from "../cutscenes/hangar-first-contact";
 import { hangarResolution } from "../cutscenes/hangar-resolution";
 import { endOfDemoTitleCard } from "../titlecards/end-of-demo";
-import type { LevelConfig, ProgressionEntry } from "./types";
+import type { ProgressionEntry } from "./types";
 
 export const allEntries: ProgressionEntry[] = [
   introOneOpening,
@@ -64,13 +64,3 @@ export const allEntries: ProgressionEntry[] = [
   hangarResolution,
   endOfDemoTitleCard,
 ];
-
-export const allLevels: LevelConfig[] = [introOneLevel, introTwoLevel];
-
-export function getLevelById(id: string): LevelConfig | undefined {
-  return allLevels.find((level) => level.id === id);
-}
-
-export function getLevelIndex(id: string): number {
-  return allLevels.findIndex((level) => level.id === id);
-}

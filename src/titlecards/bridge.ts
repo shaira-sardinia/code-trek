@@ -6,5 +6,4 @@ export const bridgeTitleCard: TitleCardConfig = {
   title: "Command Bridge",
   levelGroup: "bridge",
   duration: 2500,
-  nextSceneKey: "BridgeScene",
 };

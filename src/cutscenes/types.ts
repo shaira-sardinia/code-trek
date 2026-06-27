@@ -1,6 +1,6 @@
 import type { NPCPlacement, LevelGroup } from "../levels/types";
 import type { LogbookContent } from "../ui/LogbookOverlay";
-import type { AppearanceName } from "../characters";
+import type { AppearanceName } from "../characters/registry";
 import type { Direction } from "../core/GameAPI";
 import type { AnimatedNPCConfig } from "../entities/AnimatedNPC";
 
@@ -43,7 +43,6 @@ export interface CutsceneConfig {
   npcs?: NPCPlacement[];
   animatedNpcs?: AnimatedNPCConfig[];
   steps: CutsceneStep[];
-  nextSceneKey: string;
   seamless?: boolean;
   /**
    * When set, the script controls the lead character; the follower mirrors every

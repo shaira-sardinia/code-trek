@@ -3,6 +3,7 @@ import type { TitleCardConfig } from "../titlecards/types";
 import type { LevelManager } from "../levels/LevelManager";
 import { GAME_W, GAME_H } from "../config";
 import { getLevelNumber, TOTAL_LEVELS } from "../levels/types";
+import { EVENT_TITLECARD_COMPLETE } from "../events";
 
 export interface TitleCardSceneData {
   config: TitleCardConfig;
@@ -45,7 +46,7 @@ export class TitleCardScene extends Phaser.Scene {
 
     this.cardTimer = this.time.delayedCall(duration, () => {
       this.drifting = false;
-      this.game.events.emit("titlecard-complete", { cx: GAME_W / 2, cy: GAME_H / 2 });
+      this.game.events.emit(EVENT_TITLECARD_COMPLETE, { cx: GAME_W / 2, cy: GAME_H / 2 });
     });
 
     this.events.on("shutdown", () => {

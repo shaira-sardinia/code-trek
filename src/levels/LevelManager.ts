@@ -39,6 +39,7 @@ export class LevelManager {
   }
 
   getEffectiveHeroIdForEntry(entry: ProgressionEntry): string {
+    // Hangar sequence always uses the astro costume, regardless of hero selection.
     if (entry.levelGroup === "hangar-prelude" || entry.levelGroup === "hangar") {
       return "hero-astro";
     }

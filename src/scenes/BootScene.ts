@@ -1,6 +1,7 @@
 import Phaser from "phaser";
-import { allCharacters, walkAnimKey } from "../characters";
-import type { AppearanceName } from "../characters";
+import { allCharacters, walkAnimKey } from "../characters/registry";
+import type { AppearanceName } from "../characters/registry";
+import { EVENT_BOOT_COMPLETE } from "../events";
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -74,6 +75,6 @@ export class BootScene extends Phaser.Scene {
     }
 
     console.log("BootScene create() called — ready to transition");
-    this.game.events.emit("boot-complete");
+    this.game.events.emit(EVENT_BOOT_COMPLETE);
   }
 }

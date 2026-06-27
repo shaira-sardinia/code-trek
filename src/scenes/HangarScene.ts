@@ -1,19 +1,21 @@
 import Phaser from "phaser";
 import { Statistics } from "../managers/StatisticsManager";
 import { BaseGridScene } from "./BaseGridScene";
-import { CutsceneDialogue } from "./ui/CutsceneDialogue";
+import { CutsceneDialogue } from "../ui/CutsceneDialogue";
 import { TrustMeter } from "../ui/TrustMeter";
 import { SpeechBubble } from "../ui/SpeechBubble";
-import { runHangarClassTest } from "../core/Runner";
-import type { HangarClassTestResult } from "../core/Runner";
-import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters";
-import type { CharacterAppearance } from "../characters";
+import { runHangarClassTest, type HangarClassTestResult } from "../core/runner/hangar";
+import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters/registry";
+import type { CharacterAppearance } from "../characters/registry";
 import type { Direction } from "../core/GameAPI";
 import type { HangarLevelConfig, ProgressionEntry, TileCoord } from "../levels/types";
 import type { LevelManager } from "../levels/LevelManager";
+import { sceneDelay } from "../utils/tween";
+import { addIdleBob } from "../utils/effects";
 import { LogbookOverlay } from "../ui/LogbookOverlay";
 import { TILE_SIZE } from "../utils/grid";
 import { GAME_W, GAME_H } from "../config";
+import { EVENT_RUN_CODE, EVENT_CLOSE_LOGBOOK, EVENT_RUN_RESULT, EVENT_HANGAR_ARRIVAL_COMPLETE } from "../events";
 
 export interface HangarSceneData {
   config: HangarLevelConfig;
@@ -81,9 +83,9 @@ export class HangarScene extends BaseGridScene {
     const onLevelChanged = (_entry: ProgressionEntry) => {};
     const onCloseLogbook = () => this.logbook?.close();
 
-    this.game.events.on("run-code", onRunCode);
+    this.game.events.on(EVENT_RUN_CODE, onRunCode);
     this.game.events.on("reset-level", onResetLevel);
-    this.game.events.on("close-logbook", onCloseLogbook);
+    this.game.events.on(EVENT_CLOSE_LOGBOOK, onCloseLogbook);
     this.levelManager.on("level-changed", onLevelChanged);
 
     const storedContent = this.levelManager.getLogbookContent();
@@ -99,9 +101,9 @@ export class HangarScene extends BaseGridScene {
     this.events.on("shutdown", () => {
       this.arrivalRunId++;
       this.exchangeRunId++;
-      this.game.events.off("run-code", onRunCode);
+      this.game.events.off(EVENT_RUN_CODE, onRunCode);
       this.game.events.off("reset-level", onResetLevel);
-      this.game.events.off("close-logbook", onCloseLogbook);
+      this.game.events.off(EVENT_CLOSE_LOGBOOK, onCloseLogbook);
       this.levelManager.off("level-changed", onLevelChanged);
       if (this.captainSprite) { this.captainSprite.destroy(); this.captainSprite = undefined; }
       for (const r of this.alienRects) r.destroy();
@@ -154,7 +156,7 @@ export class HangarScene extends BaseGridScene {
     if (this.trustMeter) await this.trustMeter.show();
     if (!alive()) return;
 
-    this.game.events.emit("hangar-arrival-complete", this.config);
+    this.game.events.emit(EVENT_HANGAR_ARRIVAL_COMPLETE, this.config);
   }
 
   private async tweenCaptainTo(dest: TileCoord, duration: number): Promise<void> {
@@ -189,20 +191,12 @@ export class HangarScene extends BaseGridScene {
   }
 
   private startHeroBob(): void {
-    const baseY = this.character.y;
-    this.tweens.add({
-      targets: this.character, y: baseY - 2, duration: 600,
-      ease: "Sine.easeInOut", yoyo: true, repeat: -1, delay: Math.random() * 600,
-    });
+    addIdleBob(this, this.character, this.character.y);
   }
 
   private startCaptainBob(): void {
     if (!this.captainSprite) return;
-    const baseY = this.captainSprite.y;
-    this.tweens.add({
-      targets: this.captainSprite, y: baseY - 2, duration: 600,
-      ease: "Sine.easeInOut", yoyo: true, repeat: -1, delay: Math.random() * 600,
-    });
+    addIdleBob(this, this.captainSprite, this.captainSprite.y);
   }
 
   // ── Puzzle execution ────────────────────────────────────────────────────────
@@ -219,7 +213,7 @@ export class HangarScene extends BaseGridScene {
     const result = runHangarClassTest(code, this.config);
 
     // Show result lines and console immediately — don't wait for animations.
-    this.game.events.emit("run-result", {
+    this.game.events.emit(EVENT_RUN_RESULT, {
       passed: result.passed,
       resultLines: result.resultLines,
       consoleOutput: result.consoleOutput,
@@ -235,7 +229,7 @@ export class HangarScene extends BaseGridScene {
 
     // Trigger progression now that animations are done.
     if (result.passed) {
-      this.game.events.emit("run-result", { passed: true, manualAdvance: false });
+      this.game.events.emit(EVENT_RUN_RESULT, { passed: true, manualAdvance: false });
     }
   }
 
@@ -312,6 +306,6 @@ export class HangarScene extends BaseGridScene {
   // ── Utilities ───────────────────────────────────────────────────────────────
 
   private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => this.time.delayedCall(ms, resolve));
+    return sceneDelay(this, ms);
   }
 }

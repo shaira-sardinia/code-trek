@@ -7,7 +7,6 @@ export interface TitleCardConfig {
   subtitle?: string;
   levelGroup: LevelGroup;
   duration?: number;
-  nextSceneKey: string;
 }
 
 export function isTitleCardConfig(entry: { sceneKey: string }): entry is TitleCardConfig {

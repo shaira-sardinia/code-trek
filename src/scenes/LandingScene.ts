@@ -1,7 +1,8 @@
 import Phaser from "phaser";
-import { getCharacterById, getAppearance } from "../characters";
+import { getCharacterById, getAppearance } from "../characters/registry";
 import { Save } from "../managers/SaveManager";
 import { Statistics } from "../managers/StatisticsManager";
+import { EVENT_LANDING_COMPLETE, EVENT_LANDING_CONTINUE } from "../events";
 
 type HeroCard = {
   sprite: Phaser.GameObjects.Sprite;
@@ -272,11 +273,11 @@ export class LandingScene extends Phaser.Scene {
   }
 
   private onStartGame(): void {
-    this.game.events.emit("landing-complete", { heroId: this.selectedHeroId });
+    this.game.events.emit(EVENT_LANDING_COMPLETE, { heroId: this.selectedHeroId });
   }
 
   private onContinue(): void {
-    this.game.events.emit("landing-continue");
+    this.game.events.emit(EVENT_LANDING_CONTINUE);
   }
 
   private onShowInstructions(): void {

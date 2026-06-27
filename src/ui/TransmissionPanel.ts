@@ -1,13 +1,10 @@
 import Phaser from "phaser";
 import { GAME_W, GAME_H } from "../config";
 
-// --- Open panel dimensions ---
 const PANEL_W = 300;
 const PANEL_H = 238;
 const OPEN_X = GAME_W / 2;
 const OPEN_Y = GAME_H / 2;
-
-// --- Mini icon (terminal-closed.png, same 1920×1080 canvas format as logbook) ---
 const PNG_W = 1920;
 const PNG_H = 1080;
 const PNG_ICON_W = 108;
@@ -19,16 +16,11 @@ const ICON_DISPLAY_W = Math.round(PNG_W * ICON_SCALE);
 const ICON_DISPLAY_H = Math.round(PNG_H * ICON_SCALE);
 const ICON_ORIGIN_X = PNG_ICON_CX / PNG_W;
 const ICON_ORIGIN_Y = PNG_ICON_CY / PNG_H;
-
-// Position: right of logbook icon (logbook centre x = 44, right edge ≈ 68)
 const MINI_X = 100;
 const MINI_Y = 351;
-
 const MINI_SCALE = ICON_TARGET_W / PANEL_W;
 const ANIM_DURATION = 300;
 const DEPTH = 9000;
-
-// --- Colours ---
 const BG_COLOR = 0x041526;
 const BORDER_COLOR = 0x1a5f8a;
 const TITLE_COLOR = "#5bc4f5";
@@ -38,31 +30,23 @@ const BAR_BG_COLOR = 0x0a2535;
 const BAR_FILL_COLOR = 0x00c8a0;
 const COMBINED_BAR_COLOR = 0x4db8ff;
 const COMBINED_THRESHOLD_LINE = 0x5bc4f5;
-
-// --- Layout (in container-local coords, origin at panel centre) ---
 const LEFT = -(PANEL_W / 2) + 14;
 const RIGHT = PANEL_W / 2 - 14;
 const CONTENT_W = PANEL_W - 28;
-
 const TITLE_Y = -(PANEL_H / 2) + 16;
 const COMBINED_LABEL_Y = TITLE_Y + 22;
 const COMBINED_BAR_Y = COMBINED_LABEL_Y + 14;
 const COMBINED_BAR_H = 10;
 const DIVIDER_Y = COMBINED_BAR_Y + 16;
-
 const RELAY_START_Y = DIVIDER_Y + 14;
 const RELAY_ROW_H = 22;
-
 const NAME_W = 52;
 const BAR_W = 150;
 const BAR_H = 10;
 const BAR_X = LEFT + NAME_W + 6;
 const VALUE_X = BAR_X + BAR_W + 8;
-
 const CLOSE_X = RIGHT;
 const CLOSE_Y = -(PANEL_H / 2) + 14;
-
-// ----------------------------------------------------------------
 
 export interface RelayPanelState {
   name: string;
@@ -109,56 +93,70 @@ export class TransmissionPanel {
     bg.lineStyle(1, BORDER_COLOR, 1);
     bg.strokeRoundedRect(-PANEL_W / 2, -PANEL_H / 2, PANEL_W, PANEL_H, 6);
 
-    const titleText = scene.add.text(0, TITLE_Y, "TRANSMISSION CONTROL", {
-      fontFamily: "monospace",
-      fontSize: "10px",
-      color: TITLE_COLOR,
-    }).setOrigin(0.5, 0);
+    const titleText = scene.add
+      .text(0, TITLE_Y, "TRANSMISSION CONTROL", {
+        fontFamily: "monospace",
+        fontSize: "10px",
+        color: TITLE_COLOR,
+      })
+      .setOrigin(0.5, 0);
 
-    const combinedLabel = scene.add.text(LEFT, COMBINED_LABEL_Y, "COMBINED SIGNAL", {
-      fontFamily: "monospace",
-      fontSize: "9px",
-      color: LABEL_COLOR,
-    }).setOrigin(0, 0);
+    const combinedLabel = scene.add
+      .text(LEFT, COMBINED_LABEL_Y, "COMBINED SIGNAL", {
+        fontFamily: "monospace",
+        fontSize: "9px",
+        color: LABEL_COLOR,
+      })
+      .setOrigin(0, 0);
 
-    this.combinedValueText = scene.add.text(RIGHT, COMBINED_LABEL_Y, "0 / 100", {
-      fontFamily: "monospace",
-      fontSize: "9px",
-      color: VALUE_COLOR,
-    }).setOrigin(1, 0);
+    this.combinedValueText = scene.add
+      .text(RIGHT, COMBINED_LABEL_Y, "0 / 100", {
+        fontFamily: "monospace",
+        fontSize: "9px",
+        color: VALUE_COLOR,
+      })
+      .setOrigin(1, 0);
 
     const combinedBarBg = scene.add.rectangle(
-      LEFT + CONTENT_W / 2, COMBINED_BAR_Y + COMBINED_BAR_H / 2,
-      CONTENT_W, COMBINED_BAR_H, BAR_BG_COLOR,
+      LEFT + CONTENT_W / 2,
+      COMBINED_BAR_Y + COMBINED_BAR_H / 2,
+      CONTENT_W,
+      COMBINED_BAR_H,
+      BAR_BG_COLOR,
     );
 
-    this.combinedBarFill = scene.add.rectangle(
-      LEFT, COMBINED_BAR_Y + COMBINED_BAR_H / 2,
-      0, COMBINED_BAR_H, COMBINED_BAR_COLOR,
-    ).setOrigin(0, 0.5);
+    this.combinedBarFill = scene.add
+      .rectangle(LEFT, COMBINED_BAR_Y + COMBINED_BAR_H / 2, 0, COMBINED_BAR_H, COMBINED_BAR_COLOR)
+      .setOrigin(0, 0.5);
 
     const thresholdLine = scene.add.graphics();
     thresholdLine.lineStyle(1, COMBINED_THRESHOLD_LINE, 0.6);
-    thresholdLine.lineBetween(
-      LEFT + CONTENT_W, COMBINED_BAR_Y,
-      LEFT + CONTENT_W, COMBINED_BAR_Y + COMBINED_BAR_H,
-    );
+    thresholdLine.lineBetween(LEFT + CONTENT_W, COMBINED_BAR_Y, LEFT + CONTENT_W, COMBINED_BAR_Y + COMBINED_BAR_H);
 
     const divider = scene.add.graphics();
     divider.lineStyle(1, BORDER_COLOR, 0.4);
     divider.lineBetween(LEFT, DIVIDER_Y, RIGHT, DIVIDER_Y);
 
-    const closeBtn = scene.add.text(CLOSE_X, CLOSE_Y, "✕", {
-      fontFamily: "monospace",
-      fontSize: "12px",
-      color: LABEL_COLOR,
-    }).setOrigin(1, 0).setInteractive({ useHandCursor: true });
+    const closeBtn = scene.add
+      .text(CLOSE_X, CLOSE_Y, "✕", {
+        fontFamily: "monospace",
+        fontSize: "12px",
+        color: LABEL_COLOR,
+      })
+      .setOrigin(1, 0)
+      .setInteractive({ useHandCursor: true });
     closeBtn.on("pointerdown", () => this.minimise());
 
     const items: Phaser.GameObjects.GameObject[] = [
-      bg, titleText, combinedLabel, this.combinedValueText,
-      combinedBarBg, this.combinedBarFill, thresholdLine,
-      divider, closeBtn,
+      bg,
+      titleText,
+      combinedLabel,
+      this.combinedValueText,
+      combinedBarBg,
+      this.combinedBarFill,
+      thresholdLine,
+      divider,
+      closeBtn,
     ];
 
     this.relayRows = [];
@@ -201,27 +199,25 @@ export class TransmissionPanel {
       const relay = data.relays[i];
       const rowY = RELAY_START_Y + i * RELAY_ROW_H;
 
-      const nameText = this.scene.add.text(LEFT, rowY, relay.name, {
-        fontFamily: "monospace",
-        fontSize: "9px",
-        color: LABEL_COLOR,
-      }).setOrigin(0, 0.5);
+      const nameText = this.scene.add
+        .text(LEFT, rowY, relay.name, {
+          fontFamily: "monospace",
+          fontSize: "9px",
+          color: LABEL_COLOR,
+        })
+        .setOrigin(0, 0.5);
 
-      const barBg = this.scene.add.rectangle(
-        BAR_X + BAR_W / 2, rowY + BAR_H / 2 - 1,
-        BAR_W, BAR_H, BAR_BG_COLOR,
-      );
+      const barBg = this.scene.add.rectangle(BAR_X + BAR_W / 2, rowY + BAR_H / 2 - 1, BAR_W, BAR_H, BAR_BG_COLOR);
 
-      const barFill = this.scene.add.rectangle(
-        BAR_X, rowY + BAR_H / 2 - 1,
-        0, BAR_H, BAR_FILL_COLOR,
-      ).setOrigin(0, 0.5);
+      const barFill = this.scene.add.rectangle(BAR_X, rowY + BAR_H / 2 - 1, 0, BAR_H, BAR_FILL_COLOR).setOrigin(0, 0.5);
 
-      const valueText = this.scene.add.text(VALUE_X, rowY, "0", {
-        fontFamily: "monospace",
-        fontSize: "9px",
-        color: VALUE_COLOR,
-      }).setOrigin(0, 0.5);
+      const valueText = this.scene.add
+        .text(VALUE_X, rowY, "0", {
+          fontFamily: "monospace",
+          fontSize: "9px",
+          color: VALUE_COLOR,
+        })
+        .setOrigin(0, 0.5);
 
       this.container.add([nameText, barBg, barFill, valueText]);
 
@@ -299,7 +295,9 @@ export class TransmissionPanel {
     });
   }
 
-  setOnOpen(cb: () => void): void { this.onOpenCallback = cb; }
+  setOnOpen(cb: () => void): void {
+    this.onOpenCallback = cb;
+  }
 
   open(): void {
     if (this.state !== "minimised") return;

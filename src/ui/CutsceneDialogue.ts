@@ -15,13 +15,6 @@ const TEXT_SIZE = 13;
 const TEXT_COLOR = "#dce8f5";
 const FONT = "monospace";
 
-/**
- * In-canvas dialogue panel anchored to the bottom of the Phaser canvas.
- *
- * Isolation note: all text is created via createText() at the bottom of this
- * file. To swap Phaser.GameObjects.Text for BitmapText, replace only that
- * method and update the field types — nothing in CutsceneScene needs to change.
- */
 export class CutsceneDialogue {
   private scene: Phaser.Scene;
   private bg: Phaser.GameObjects.Graphics;
@@ -63,7 +56,10 @@ export class CutsceneDialogue {
   }
 
   show(speaker: string, text: string): void {
-    if (this.fadeTween) { this.fadeTween.stop(); this.fadeTween = null; }
+    if (this.fadeTween) {
+      this.fadeTween.stop();
+      this.fadeTween = null;
+    }
 
     this.speakerLabel.setText(speaker);
     this.bodyText.setText(text);
@@ -77,12 +73,17 @@ export class CutsceneDialogue {
       alpha: 1,
       duration: 200,
       ease: "Sine.easeOut",
-      onComplete: () => { this.fadeTween = null; },
+      onComplete: () => {
+        this.fadeTween = null;
+      },
     });
   }
 
   hide(): void {
-    if (this.fadeTween) { this.fadeTween.stop(); this.fadeTween = null; }
+    if (this.fadeTween) {
+      this.fadeTween.stop();
+      this.fadeTween = null;
+    }
 
     this.fadeTween = this.scene.tweens.add({
       targets: [this.bg, this.speakerLabel, this.bodyText],
@@ -99,14 +100,16 @@ export class CutsceneDialogue {
   }
 
   destroy(): void {
-    if (this.fadeTween) { this.fadeTween.stop(); this.fadeTween = null; }
+    if (this.fadeTween) {
+      this.fadeTween.stop();
+      this.fadeTween = null;
+    }
     this.bg.destroy();
     this.speakerLabel.destroy();
     this.bodyText.destroy();
   }
 }
 
-// Swap this function to use BitmapText when the pixel font is ready.
 function createText(
   scene: Phaser.Scene,
   x: number,

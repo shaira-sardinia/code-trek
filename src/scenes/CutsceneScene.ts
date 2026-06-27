@@ -1,17 +1,19 @@
 import Phaser from "phaser";
 import { BaseGridScene } from "./BaseGridScene";
-import { CutsceneDialogue } from "./ui/CutsceneDialogue";
+import { CutsceneDialogue } from "../ui/CutsceneDialogue";
 import { LogbookOverlay } from "../ui/LogbookOverlay";
 import { AnimatedNPC } from "../entities/AnimatedNPC";
 import type { CutsceneConfig, CutsceneStep } from "../cutscenes/types";
 import type { LevelManager } from "../levels/LevelManager";
 import { GAME_W, GAME_H } from "../config";
-import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters";
-import type { CharacterConfig, CharacterAppearance } from "../characters";
+import { sceneDelay } from "../utils/tween";
+import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters/registry";
+import type { CharacterConfig, CharacterAppearance } from "../characters/registry";
 import type { Direction } from "../core/GameAPI";
 import { tweenTo } from "../utils/tween";
 import { SpeechBubble } from "../ui/SpeechBubble";
 import { TILE_SIZE } from "../utils/grid";
+import { EVENT_CUTSCENE_COMPLETE } from "../events";
 
 export interface CutsceneSceneData {
   levelManager: LevelManager;
@@ -409,9 +411,7 @@ export class CutsceneScene extends BaseGridScene {
   }
 
   private pause(duration: number): Promise<void> {
-    return new Promise<void>((resolve) => {
-      this.time.delayedCall(duration, resolve);
-    });
+    return sceneDelay(this, duration);
   }
 
   private skip(): void {
@@ -422,7 +422,7 @@ export class CutsceneScene extends BaseGridScene {
 
   private complete(): void {
     this.skipText.disableInteractive();
-    this.game.events.emit("cutscene-complete", {
+    this.game.events.emit(EVENT_CUTSCENE_COMPLETE, {
       cx: this.character.x,
       cy: this.character.y,
     });

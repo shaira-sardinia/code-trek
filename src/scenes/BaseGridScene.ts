@@ -2,8 +2,8 @@ import Phaser from "phaser";
 import { tileToPixel, TILE_SIZE } from "../utils/grid";
 import { tweenTo } from "../utils/tween";
 import type { Direction } from "../core/GameAPI";
-import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters";
-import type { CharacterConfig, CharacterAppearance, AppearanceName } from "../characters";
+import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters/registry";
+import type { CharacterConfig, CharacterAppearance, AppearanceName } from "../characters/registry";
 import type { LevelManager } from "../levels/LevelManager";
 import type { NPCPlacement } from "../levels/types";
 

@@ -1,4 +1,4 @@
-import { Statistics, MAX_CHEATS_PER_SESSION } from "./StatisticsManager";
+import { Statistics, MAX_CHEATS_PER_SESSION } from "../managers/StatisticsManager";
 import { formatSessionDuration, formatDuration } from "../utils/formatDuration";
 
 const LEVEL_DISPLAY_NAMES: Record<string, string> = {
@@ -31,6 +31,7 @@ class EndOfDemoSummary {
     if (!el) throw new Error("Summary element #end-of-demo-summary not found in DOM");
     this.element = el;
     this.setupStartOverButton();
+    this.setupCopyButton();
   }
 
   public static getInstance(): EndOfDemoSummary {
@@ -100,6 +101,61 @@ class EndOfDemoSummary {
         hintsBreakdownTable.appendChild(row);
       }
     }
+  }
+
+  private setupCopyButton(): void {
+    const button = document.getElementById("summary-copy-btn");
+    if (!button) return;
+    button.addEventListener("click", () => {
+      const text = this.buildCopyText();
+      navigator.clipboard.writeText(text).then(() => {
+        button.textContent = "Copied!";
+        setTimeout(() => { button.textContent = "Copy"; }, 2000);
+      });
+    });
+  }
+
+  private buildCopyText(): string {
+    const lines: string[] = ["Code Trek — Summary Stats", ""];
+
+    const sessionEl = document.getElementById("summary-session-duration");
+    if (sessionEl?.textContent) {
+      lines.push("Session Duration", sessionEl.textContent, "");
+    }
+
+    const levelTimesTable = document.getElementById("summary-level-times");
+    if (levelTimesTable && levelTimesTable.children.length > 0) {
+      lines.push("Time per Level");
+      for (const row of levelTimesTable.querySelectorAll("tr")) {
+        const cells = row.querySelectorAll("td");
+        if (cells.length === 2) lines.push(`  ${cells[0].textContent}  ${cells[1].textContent}`);
+      }
+      lines.push("");
+    }
+
+    const attemptsTable = document.getElementById("summary-puzzle-attempts");
+    if (attemptsTable && attemptsTable.children.length > 0) {
+      lines.push("Attempts per Puzzle");
+      for (const row of attemptsTable.querySelectorAll("tr")) {
+        const cells = row.querySelectorAll("td");
+        if (cells.length === 2) lines.push(`  ${cells[0].textContent}  ${cells[1].textContent}`);
+      }
+      lines.push("");
+    }
+
+    const hintsTotalEl = document.getElementById("summary-hints-total");
+    if (hintsTotalEl?.textContent) {
+      lines.push("Hints Used", hintsTotalEl.textContent);
+      const hintsTable = document.getElementById("summary-hints-breakdown");
+      if (hintsTable && hintsTable.children.length > 0) {
+        for (const row of hintsTable.querySelectorAll("tr")) {
+          const cells = row.querySelectorAll("td");
+          if (cells.length === 2) lines.push(`  ${cells[0].textContent}  ${cells[1].textContent}`);
+        }
+      }
+    }
+
+    return lines.join("\n");
   }
 
   private setupStartOverButton(): void {

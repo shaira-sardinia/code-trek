@@ -281,7 +281,6 @@ export function getAppearance(character: CharacterConfig, name: AppearanceName =
 }
 
 export function idleFrameForFacing(facing: "up" | "down" | "left" | "right"): number {
-  // Idle sheet column order: left=0, front/down=1, right=2, back/up=3
   switch (facing) {
     case "left":
       return 0;

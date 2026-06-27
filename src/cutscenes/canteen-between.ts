@@ -15,7 +15,6 @@ export const canteenBetween: CutsceneConfig = {
     { facing: "up", steps: 1 },
     { facing: "left", steps: 0 },
   ],
-  nextSceneKey: "CanteenScene",
   seamless: true,
 
   npcs: [

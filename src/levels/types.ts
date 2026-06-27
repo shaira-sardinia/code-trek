@@ -1,5 +1,5 @@
 import type { Direction } from "../core/GameAPI";
-import type { AppearanceName } from "../characters";
+import type { AppearanceName } from "../characters/registry";
 import type { LogbookContent } from "../ui/LogbookOverlay";
 import type { AnimatedNPCConfig } from "../entities/AnimatedNPC";
 

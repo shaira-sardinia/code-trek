@@ -2,15 +2,17 @@ import { Statistics } from "../managers/StatisticsManager";
 import { BaseGridScene } from "./BaseGridScene";
 import { LogbookOverlay } from "../ui/LogbookOverlay";
 import { tileToPixel, TILE_SIZE } from "../utils/grid";
+import { sceneDelay } from "../utils/tween";
 import { isCanteenLevelConfig } from "../levels/types";
 import type { CanteenLevelConfig, ProgressionEntry, TileCoord } from "../levels/types";
 import type { LevelManager } from "../levels/LevelManager";
-import { runCanteenCode } from "../core/Runner";
-import type { RunContext } from "../core/Runner";
+import { runCanteenCode } from "../core/runner/canteen";
+import type { RunContext } from "../core/runner/shared";
 import type { Command, ExecutedCommand } from "../core/Command";
 import type { Direction } from "../core/GameAPI";
-import { walkAnimKey } from "../characters";
-import type { AppearanceName } from "../characters";
+import { walkAnimKey } from "../characters/registry";
+import type { AppearanceName } from "../characters/registry";
+import { EVENT_RUN_CODE, EVENT_CLOSE_LOGBOOK, EVENT_RUN_RESULT, EVENT_CANTEEN_PUZZLE_COMPLETE } from "../events";
 
 export interface CanteenSceneData {
   levelManager: LevelManager;
@@ -64,15 +66,15 @@ export class CanteenScene extends BaseGridScene {
     };
     const onCloseLogbook = () => this.logbook?.close();
 
-    this.game.events.on("run-code", onRunCode);
+    this.game.events.on(EVENT_RUN_CODE, onRunCode);
     this.game.events.on("reset-level", onResetLevel);
-    this.game.events.on("close-logbook", onCloseLogbook);
+    this.game.events.on(EVENT_CLOSE_LOGBOOK, onCloseLogbook);
     this.levelManager.on("level-changed", onLevelChanged);
 
     this.events.on("shutdown", () => {
-      this.game.events.off("run-code", onRunCode);
+      this.game.events.off(EVENT_RUN_CODE, onRunCode);
       this.game.events.off("reset-level", onResetLevel);
-      this.game.events.off("close-logbook", onCloseLogbook);
+      this.game.events.off(EVENT_CLOSE_LOGBOOK, onCloseLogbook);
       this.levelManager.off("level-changed", onLevelChanged);
       if (this.logbook) {
         this.logbook.destroy();
@@ -108,7 +110,7 @@ export class CanteenScene extends BaseGridScene {
     const result = runCanteenCode(code, this.currentLevel, context);
 
     if (result.failureReason) {
-      this.game.events.emit("run-result", {
+      this.game.events.emit(EVENT_RUN_RESULT, {
         passed: false,
         reason: result.failureReason,
         consoleOutput: result.consoleOutput,
@@ -118,7 +120,7 @@ export class CanteenScene extends BaseGridScene {
     }
 
     if (this.currentLevel.suspectOrderNumbers) {
-      this.game.events.emit("run-result", {
+      this.game.events.emit(EVENT_RUN_RESULT, {
         passed: result.passed,
         resultLines: result.resultLines,
         consoleOutput: result.consoleOutput,
@@ -128,14 +130,14 @@ export class CanteenScene extends BaseGridScene {
       if (result.passed) {
         await this.waitFor(800);
         await this.playSuspectFlees();
-        this.game.events.emit("canteen-puzzle-complete");
+        this.game.events.emit(EVENT_CANTEEN_PUZZLE_COMPLETE);
       } else {
         await this.playCanteenFailure();
       }
     } else {
       await this.playServeSequence(result.commands);
 
-      this.game.events.emit("run-result", {
+      this.game.events.emit(EVENT_RUN_RESULT, {
         passed: result.passed,
         resultLines: result.resultLines,
         consoleOutput: result.consoleOutput,
@@ -252,7 +254,7 @@ export class CanteenScene extends BaseGridScene {
   }
 
   private waitFor(ms: number): Promise<void> {
-    return new Promise<void>((resolve) => this.time.delayedCall(ms, resolve));
+    return sceneDelay(this, ms);
   }
 
   private placeNpcs(): void {

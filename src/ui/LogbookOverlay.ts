@@ -1,62 +1,45 @@
 import Phaser from "phaser";
 import { GAME_W, GAME_H } from "../config";
 
-// --- PNG card measurements (tune these if the frame appears offset or mis-sized) ---
 const PNG_W = 1920;
 const PNG_H = 1080;
 const PNG_CARD_W = 840;
 const PNG_CARD_H = 460;
 const PNG_CARD_CX = 960;
 const PNG_CARD_CY = 507;
-
-// --- Folder icon measurements ---
 const PNG_ICON_W = 120;
 const PNG_ICON_CX = 1015;
 const PNG_ICON_CY = 547;
 const ICON_TARGET_W = 48;
-
-// --- Open-state display size ---
 const OPEN_W = 480;
 const OPEN_H = Math.round((PNG_CARD_H * OPEN_W) / PNG_CARD_W); // ≈ 263
 const OPEN_X = GAME_W / 2;
 const OPEN_Y = GAME_H / 2;
-
 const CARD_SCALE = OPEN_W / PNG_CARD_W;
 const IMG_DISPLAY_W = Math.round(PNG_W * CARD_SCALE);
 const IMG_DISPLAY_H = Math.round(PNG_H * CARD_SCALE);
 const IMG_ORIGIN_X = PNG_CARD_CX / PNG_W;
 const IMG_ORIGIN_Y = PNG_CARD_CY / PNG_H;
-
 const ICON_SCALE = ICON_TARGET_W / PNG_ICON_W;
 const ICON_DISPLAY_W = Math.round(PNG_W * ICON_SCALE);
 const ICON_DISPLAY_H = Math.round(PNG_H * ICON_SCALE);
 const ICON_ORIGIN_X = PNG_ICON_CX / PNG_W;
 const ICON_ORIGIN_Y = PNG_ICON_CY / PNG_H;
-
 const MINI_MARGIN = 8;
 const MINI_X = MINI_MARGIN + ICON_TARGET_W / 2 + 12;
 const MINI_Y = GAME_H - MINI_MARGIN - Math.round(ICON_TARGET_W * (PNG_ICON_CY / PNG_ICON_CX)) / 2 - 12;
-
 const MINI_SCALE = ICON_TARGET_W / OPEN_W;
 const ANIM_DURATION = 300;
 const DEPTH = 5000;
-
-// --- Content layout ---
 const CONTENT_INSET_X = 35;
 const CONTENT_INSET_Y = 30;
 const CONTENT_Y = -(OPEN_H / 2) + CONTENT_INSET_Y;
 const CONTENT_W = OPEN_W - CONTENT_INSET_X * 2;
 const CLOSE_BTN_X = OPEN_W / 2 - 36;
 const CLOSE_BTN_Y = -(OPEN_H / 2) + 32;
-
-// Scroll: height of the visible content window
 const SCROLL_VIEW_H = OPEN_H - CONTENT_INSET_Y * 2 - 6;
-
-// World-space y bounds of the content window (fixed when logbook is fully open)
 const VIEW_TOP = OPEN_Y + CONTENT_Y + 6;
 const VIEW_BOTTOM = VIEW_TOP + SCROLL_VIEW_H;
-
-// --- Text styles ---
 const FONT = "monospace";
 const TITLE_SIZE = 13;
 const HEADING_SIZE = 11;
@@ -64,17 +47,14 @@ const LINE_SIZE = 11;
 const TITLE_COLOR = "#041526";
 const HEADING_COLOR = "#164b77";
 const LINE_COLOR = "#000000";
-
 const TITLE_GAP = 14;
 const HEADING_GAP = 5;
 const LINE_GAP = 5;
 const SECTION_GAP = 12;
 
-// ----------------------------------------------------------------
-
 export interface LogbookLine {
   text: string;
-  obscuredText?: string; // rendered blurred before the main text
+  obscuredText?: string;
 }
 
 export interface LogbookContent {
@@ -117,22 +97,17 @@ export class LogbookOverlay {
     this.closeBtn.setInteractive({ useHandCursor: true });
     this.closeBtn.on("pointerdown", () => this.close());
     this.closeBtn.setVisible(false);
-
     this.container = scene.add.container(OPEN_X, OPEN_Y, [this.frame, this.closeBtn]);
     this.container.setDepth(DEPTH);
     this.container.setVisible(false);
-
-    // Scrollable content lives outside the main container in scene space
     this.contentGroup = scene.add.container(OPEN_X, OPEN_Y);
     this.contentGroup.setDepth(DEPTH + 1);
     this.contentGroup.setVisible(false);
-
     this.miniIcon = scene.add.image(MINI_X, MINI_Y, "logbook-closed");
     this.miniIcon.setDisplaySize(ICON_DISPLAY_W, ICON_DISPLAY_H);
     this.miniIcon.setOrigin(ICON_ORIGIN_X, ICON_ORIGIN_Y);
     this.miniIcon.setDepth(DEPTH);
     this.miniIcon.setVisible(false);
-
     this.miniHitZone = scene.add.zone(MINI_X, MINI_Y, ICON_TARGET_W, ICON_TARGET_W);
     this.miniHitZone.setDepth(DEPTH);
     this.miniHitZone.setVisible(false);
@@ -149,7 +124,10 @@ export class LogbookOverlay {
       if (animate) {
         const sx = this.miniIcon.scaleX;
         const sy = this.miniIcon.scaleY;
-        this.miniIcon.setAlpha(0).setScale(sx * 0.6, sy * 0.6).setVisible(true);
+        this.miniIcon
+          .setAlpha(0)
+          .setScale(sx * 0.6, sy * 0.6)
+          .setVisible(true);
         this.state = "minimised";
         this.scene.tweens.add({
           targets: this.miniIcon,
@@ -174,7 +152,9 @@ export class LogbookOverlay {
     this.state = "hidden";
   }
 
-  setOnOpen(cb: () => void): void { this.onOpenCallback = cb; }
+  setOnOpen(cb: () => void): void {
+    this.onOpenCallback = cb;
+  }
 
   open(): void {
     if (this.state !== "minimised") return;
@@ -346,7 +326,6 @@ export class LogbookOverlay {
     this.miniHitZone.destroy();
   }
 
-  // Show only items whose world-space y intersects the fixed content window.
   private cullItems(): void {
     const groupY = this.contentGroup.y;
     for (const child of this.contentGroup.getAll()) {
@@ -358,11 +337,7 @@ export class LogbookOverlay {
   }
 
   private scroll(deltaY: number): void {
-    this.scrollOffset = Phaser.Math.Clamp(
-      this.scrollOffset + deltaY * 0.5,
-      0,
-      this.maxScrollOffset,
-    );
+    this.scrollOffset = Phaser.Math.Clamp(this.scrollOffset + deltaY * 0.5, 0, this.maxScrollOffset);
     this.contentGroup.y = OPEN_Y - this.scrollOffset;
     this.cullItems();
   }

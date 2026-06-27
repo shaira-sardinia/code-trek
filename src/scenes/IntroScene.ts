@@ -1,14 +1,16 @@
 import { Statistics } from "../managers/StatisticsManager";
 import { tileToPixel, TILE_SIZE } from "../utils/grid";
 import { tweenTo } from "../utils/tween";
-import { runPlayerCode, type RunContext } from "../core/Runner";
+import { runPlayerCode } from "../core/runner/intro";
+import type { RunContext } from "../core/runner/shared";
 import type { ExecutedCommand } from "../core/Command";
 import { isLevelConfig } from "../levels/types";
 import type { LevelConfig, ProgressionEntry } from "../levels/types";
 import type { LevelManager } from "../levels/LevelManager";
 import { BaseGridScene } from "./BaseGridScene";
-import { walkAnimKey, idleFrameForFacing } from "../characters";
+import { walkAnimKey, idleFrameForFacing } from "../characters/registry";
 import Phaser from "phaser";
+import { EVENT_RUN_CODE, EVENT_RUN_RESULT } from "../events";
 
 export interface IntroSceneData {
   levelManager: LevelManager;
@@ -42,17 +44,16 @@ export class IntroScene extends BaseGridScene {
       if (isLevelConfig(entry)) this.transitionToLevel(entry);
     };
 
-    this.game.events.on("run-code", onRunCode);
+    this.game.events.on(EVENT_RUN_CODE, onRunCode);
     this.game.events.on("reset-level", onResetLevel);
     this.levelManager.on("level-changed", onLevelChanged);
 
     this.events.on("shutdown", () => {
-      this.game.events.off("run-code", onRunCode);
+      this.game.events.off(EVENT_RUN_CODE, onRunCode);
       this.game.events.off("reset-level", onResetLevel);
       this.levelManager.off("level-changed", onLevelChanged);
     });
 
-    console.log("IntroScene ready. Level:", this.currentLevel.id);
   }
 
   private transitionToLevel(level: LevelConfig) {
@@ -61,7 +62,6 @@ export class IntroScene extends BaseGridScene {
     this.loadMap(level.tilemapKey);
     this.repositionCharacter(level.startPosition, level.appearance ?? "default");
     this.children.bringToTop(this.character);
-    console.log("Transitioned to level:", level.id);
   }
 
   getPlayerPixelPos(): { x: number; y: number } {
@@ -92,7 +92,7 @@ export class IntroScene extends BaseGridScene {
 
     if (result.failureReason && result.commands.length === 0) {
       const isRuntimeError = result.consoleOutput.some((e) => e.type === "error");
-      this.game.events.emit("run-result", {
+      this.game.events.emit(EVENT_RUN_RESULT, {
         passed: false,
         reason: isRuntimeError ? undefined : result.failureReason,
         consoleOutput: result.consoleOutput,
@@ -104,7 +104,7 @@ export class IntroScene extends BaseGridScene {
     try {
       await this.playCommandSequence(result.commands);
 
-      this.game.events.emit("run-result", {
+      this.game.events.emit(EVENT_RUN_RESULT, {
         passed: result.passed,
         reason: result.passed ? "Scene complete!" : (result.failureReason ?? "You didn't reach the goal."),
         resultLines: result.resultLines,

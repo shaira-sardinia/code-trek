@@ -113,15 +113,6 @@ dist
 # FuseBox cache
 .fusebox/
 
-# DynamoDB Local files
-.dynamodb/
-
-# Firebase cache directory
-.firebase/
-
-# TernJS port file
-.tern-port
-
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
@@ -144,4 +135,4 @@ vite.config.ts.timestamp-*
 
 .DS_Store
 .idea/
-.md
+/*.md

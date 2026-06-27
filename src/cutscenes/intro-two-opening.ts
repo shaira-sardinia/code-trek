@@ -9,7 +9,6 @@ export const introTwoOpening: CutsceneConfig = {
   tilemapKey: "intro-two",
   startPosition: { col: 1, row: 5 },
   startFacing: "right",
-  nextSceneKey: "IntroScene",
   npcs: [],
   steps: [
     { type: "dialogue", speaker: "NARRATOR", text: "You step through the door into your quarters.", duration: 3500 },

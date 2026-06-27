@@ -6,5 +6,4 @@ export const canteenTitleCard: TitleCardConfig = {
   title: "The Canteen",
   levelGroup: "canteen",
   duration: 2500,
-  nextSceneKey: "IntroScene",
 };

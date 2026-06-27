@@ -6,5 +6,4 @@ export const engineeringTitleCard: TitleCardConfig = {
   title: "Engineering Deck",
   levelGroup: "engineering",
   duration: 2500,
-  nextSceneKey: "EngineeringScene",
 };

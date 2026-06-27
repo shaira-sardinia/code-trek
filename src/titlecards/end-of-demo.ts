@@ -7,5 +7,4 @@ export const endOfDemoTitleCard: TitleCardConfig = {
   subtitle: "Thanks for playing",
   levelGroup: "end",
   duration: 5000,
-  nextSceneKey: "",
 };

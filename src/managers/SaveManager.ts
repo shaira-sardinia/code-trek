@@ -1,3 +1,5 @@
+import { computeChecksum, verifyChecksum } from "../utils/integrity";
+
 const STORAGE_KEY = "code-trek:save:v1";
 
 interface SaveData {
@@ -20,16 +22,7 @@ export class SaveManager {
   }
 
   public hasSave(): boolean {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return false;
-      const parsed = JSON.parse(raw) as SaveData;
-      if (parsed.formatVersion !== 1) return false;
-      if (typeof parsed.currentEntryIndex !== "number") return false;
-      return true;
-    } catch {
-      return false;
-    }
+    return this.load() !== null;
   }
 
   public save(entryIndex: number, heroId: string): void {
@@ -40,7 +33,9 @@ export class SaveManager {
         currentEntryIndex: entryIndex,
         selectedHeroId: heroId,
       };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      const payload = JSON.stringify(data);
+      const checksum = computeChecksum(payload);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ checksum, payload }));
     } catch (e) {
       console.warn("Could not save game state:", e);
     }
@@ -50,10 +45,25 @@ export class SaveManager {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return null;
-      const parsed = JSON.parse(raw) as SaveData;
+
+      const wrapped = JSON.parse(raw) as { checksum?: string; payload?: string };
+
+      if (!wrapped.checksum || !wrapped.payload) {
+        console.warn("Save data missing checksum or payload. Discarding.");
+        return null;
+      }
+
+      if (!verifyChecksum(wrapped.payload, wrapped.checksum)) {
+        console.warn("Save data checksum mismatch — possible tampering. Discarding.");
+        return null;
+      }
+
+      const parsed = JSON.parse(wrapped.payload) as SaveData;
+
       if (parsed.formatVersion !== 1) return null;
       if (typeof parsed.currentEntryIndex !== "number") return null;
       if (typeof parsed.selectedHeroId !== "string") return null;
+
       return parsed;
     } catch (e) {
       console.warn("Could not load save data:", e);

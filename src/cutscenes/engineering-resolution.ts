@@ -8,8 +8,6 @@ export const engineeringResolution: CutsceneConfig = {
   tilemapKey: "engineering",
   startPosition: { col: 9, row: 6 },
   startFacing: "up",
-  nextSceneKey: "TitleCardScene",
-
   npcs: [
     { characterId: "engineer", position: { col: 6, row: 3 }, facing: "right" },
     { characterId: "robot-4", position: { col: 0, row: 2 }, facing: "up" },

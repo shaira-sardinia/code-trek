@@ -8,8 +8,6 @@ export const transmitterCutscene: CutsceneConfig = {
   tilemapKey: "intro-two",
   startPosition: { col: 9, row: 2 },
   startFacing: "left",
-  nextSceneKey: "IntroScene",
-
   steps: [
     { type: "wait", duration: 800 },
     {

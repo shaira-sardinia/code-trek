@@ -9,8 +9,6 @@ export const engineeringBetweenOne: CutsceneConfig = {
   tilemapKey: "engineering",
   startPosition: { col: 1, row: 6 },
   startFacing: "up",
-  nextSceneKey: "EngineeringScene",
-
   npcs: [
     { characterId: "engineer", position: { col: 6, row: 3 }, facing: "down" },
     { characterId: "robot-4", position: { col: 0, row: 2 }, facing: "up" },

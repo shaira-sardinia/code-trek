@@ -8,7 +8,6 @@ export const bridgeResolution: CutsceneConfig = {
   tilemapKey: "bridge",
   startPosition: { col: 2, row: 3 },
   startFacing: "up",
-  nextSceneKey: "TitleCardScene",
   seamless: true,
 
   npcs: [

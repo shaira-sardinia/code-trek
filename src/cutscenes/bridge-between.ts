@@ -8,8 +8,6 @@ export const bridgeBetween: CutsceneConfig = {
   tilemapKey: "bridge",
   startPosition: { col: 8, row: 6 },
   startFacing: "right",
-  nextSceneKey: "BridgeScene",
-
   npcs: [
     { characterId: "captain", position: { col: 10, row: 5 }, facing: "left" },
     { characterId: "char-3", position: { col: 2, row: 6 }, facing: "up" },

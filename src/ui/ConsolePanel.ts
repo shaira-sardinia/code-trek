@@ -1,4 +1,4 @@
-import type { ConsoleEntry } from "../core/Runner";
+import type { ConsoleEntry } from "../core/runner/shared";
 
 export class ConsolePanel {
   private panel: HTMLElement;

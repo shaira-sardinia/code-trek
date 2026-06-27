@@ -5,8 +5,9 @@ import { LogbookOverlay } from "../ui/LogbookOverlay";
 import { isEngineeringLevelConfig } from "../levels/types";
 import type { EngineeringLevelConfig, ProgressionEntry } from "../levels/types";
 import type { LevelManager } from "../levels/LevelManager";
-import { runEngineeringCode, runEngineeringFunctionTest, runEngineeringCalibrationCode } from "../core/Runner";
+import { runEngineeringCode, runEngineeringFunctionTest, runEngineeringCalibrationCode } from "../core/runner/engineering";
 import { playBobEffect } from "../utils/effects";
+import { EVENT_RUN_CODE, EVENT_CLOSE_LOGBOOK, EVENT_RUN_RESULT } from "../events";
 
 export interface EngineeringSceneData {
   config: EngineeringLevelConfig;
@@ -77,15 +78,15 @@ export class EngineeringScene extends BaseGridScene {
     };
     const onCloseLogbook = () => this.logbook?.close();
 
-    this.game.events.on("run-code", onRunCode);
+    this.game.events.on(EVENT_RUN_CODE, onRunCode);
     this.game.events.on("reset-level", onResetLevel);
-    this.game.events.on("close-logbook", onCloseLogbook);
+    this.game.events.on(EVENT_CLOSE_LOGBOOK, onCloseLogbook);
     this.levelManager.on("level-changed", onLevelChanged);
 
     this.events.on("shutdown", () => {
-      this.game.events.off("run-code", onRunCode);
+      this.game.events.off(EVENT_RUN_CODE, onRunCode);
       this.game.events.off("reset-level", onResetLevel);
-      this.game.events.off("close-logbook", onCloseLogbook);
+      this.game.events.off(EVENT_CLOSE_LOGBOOK, onCloseLogbook);
       this.levelManager.off("level-changed", onLevelChanged);
 
       this.miles?.destroy();
@@ -101,7 +102,7 @@ export class EngineeringScene extends BaseGridScene {
     if (this.config.expectedFunctionName) {
       const result = runEngineeringFunctionTest(code, this.config);
       if (result.passed) playBobEffect(this, this.character, 8);
-      this.game.events.emit("run-result", {
+      this.game.events.emit(EVENT_RUN_RESULT, {
         passed: result.passed,
         resultLines: result.resultLines,
         consoleOutput: result.consoleOutput,
@@ -110,7 +111,7 @@ export class EngineeringScene extends BaseGridScene {
     } else if (this.config.sensors) {
       const result = runEngineeringCalibrationCode(code, this.config);
       if (result.passed) playBobEffect(this, this.character, 8);
-      this.game.events.emit("run-result", {
+      this.game.events.emit(EVENT_RUN_RESULT, {
         passed: result.passed,
         resultLines: result.resultLines,
         consoleOutput: result.consoleOutput,
@@ -118,7 +119,7 @@ export class EngineeringScene extends BaseGridScene {
       });
     } else {
       const result = runEngineeringCode(code);
-      this.game.events.emit("run-result", {
+      this.game.events.emit(EVENT_RUN_RESULT, {
         passed: false,
         consoleOutput: result.consoleOutput,
       });

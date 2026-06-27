@@ -7,7 +7,6 @@ export const canteenArrival: CutsceneConfig = {
   levelGroup: "canteen",
   tilemapKey: "canteen",
   startPosition: { col: 10, row: 3 },
-  nextSceneKey: "CanteenScene",
   seamless: true,
   startFacing: "up",
   introPosition: { col: 7, row: 7 },

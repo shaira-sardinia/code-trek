@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { tileToPixel } from "../utils/grid";
-import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters";
-import type { AppearanceName, CharacterConfig, CharacterAppearance } from "../characters";
+import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters/registry";
+import type { AppearanceName, CharacterConfig, CharacterAppearance } from "../characters/registry";
 import type { Direction } from "../core/GameAPI";
 
 export interface AnimatedNPCConfig {

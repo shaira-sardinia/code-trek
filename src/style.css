@@ -384,6 +384,7 @@ body {
 }
 
 .end-of-demo-summary__panel {
+  position: relative;
   background: #1a2233;
   border: 2px solid #88aaff;
   border-radius: 6px;
@@ -392,6 +393,26 @@ body {
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
+}
+
+.end-of-demo-summary__copy-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  background: transparent;
+  color: #88aaff;
+  border: 1px solid #3a4a6a;
+  border-radius: 3px;
+  font-size: 11px;
+  font-family: monospace;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.end-of-demo-summary__copy-btn:hover {
+  color: #aaccff;
+  border-color: #88aaff;
 }
 
 .end-of-demo-summary__title {

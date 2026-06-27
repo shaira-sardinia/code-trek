@@ -6,8 +6,6 @@ export const hangarResolution: CutsceneConfig = {
   title: "The Hangar",
   levelGroup: "hangar",
   tilemapKey: "hangar-two",
-  nextSceneKey: "TitleCardScene",
-
   startPosition: { col: 6, row: 6 },
   startFacing: "up",
 

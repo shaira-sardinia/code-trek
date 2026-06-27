@@ -7,5 +7,4 @@ export const hangarTitleCard: TitleCardConfig = {
   subtitle: "First Contact",
   levelGroup: "hangar",
   duration: 2500,
-  nextSceneKey: "HangarScene",
 };

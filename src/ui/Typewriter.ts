@@ -91,6 +91,7 @@ export class Typewriter {
     p.className = "beat run-result";
     p.innerHTML = html;
     this.element.prepend(p);
+    this.element.scrollTop = 0;
   }
 
   cancel(): void {
