@@ -36,6 +36,7 @@ export class HangarScene extends BaseGridScene {
 
   private logbook: LogbookOverlay | null = null;
 
+  private currentTrust: number = 50;
   private arrivalRunId = 0;
   private exchangeRunId = 0;
 
@@ -77,7 +78,8 @@ export class HangarScene extends BaseGridScene {
       this.alienSprites.set(alien.alienId, sprite);
     }
 
-    this.trustMeter = new TrustMeter(this, 16, 16, this.config.trustMeter?.initialValue ?? 50);
+    this.currentTrust = this.config.trustMeter?.initialValue ?? 50;
+    this.trustMeter = new TrustMeter(this, 16, 16, this.currentTrust);
     this.cutsceneDialogue = new CutsceneDialogue(this, GAME_W, GAME_H);
 
     const onRunCode = (code: string) => this.runCode(code);
@@ -225,7 +227,6 @@ export class HangarScene extends BaseGridScene {
       this.activeBubble = undefined;
     }
     this.cutsceneDialogue?.hide();
-    this.trustMeter?.setValue(this.config.trustMeter?.initialValue ?? 50);
     this.setAlienState("idle");
 
     const result = runHangarClassTest(code, this.config);
@@ -251,7 +252,7 @@ export class HangarScene extends BaseGridScene {
   private async runExchangeAnimations(result: HangarClassTestResult, alive: () => boolean): Promise<void> {
     const correctDelta = this.config.trustMeter?.correctDelta ?? 20;
     const wrongDelta = this.config.trustMeter?.wrongDelta ?? -10;
-    let currentTrust = this.config.trustMeter?.initialValue ?? 50;
+    let currentTrust = this.currentTrust;
 
     const alienPos = this.config.speakerAlienPosition;
     const bubbleX = alienPos ? alienPos.col * TILE_SIZE + TILE_SIZE / 2 : GAME_W / 2;
@@ -283,6 +284,7 @@ export class HangarScene extends BaseGridScene {
       }
 
       currentTrust = Math.max(0, Math.min(100, currentTrust + (ex.correct ? correctDelta : wrongDelta)));
+      this.currentTrust = currentTrust;
       this.trustMeter?.setValue(currentTrust);
 
       await this.delay(ex.correct ? 1400 : 400);

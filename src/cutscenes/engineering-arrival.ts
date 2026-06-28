@@ -47,7 +47,7 @@ export const engineeringArrival: CutsceneConfig = {
     },
     {
       type: "dialogue",
-      speaker: "MILES",
+      speaker: "ME",
       text: "I'm the new crew member.",
       duration: 2500,
     },

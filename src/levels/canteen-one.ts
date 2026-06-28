@@ -33,7 +33,7 @@ export const canteenOne: CanteenLevelConfig = {
     },
     {
       table: 3,
-      position: { col: 4, row: 6 },
+      position: { col: 2, row: 6 },
       facing: "up",
       walkTo: [
         { facing: "right", steps: 1 },

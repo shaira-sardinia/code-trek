@@ -80,7 +80,7 @@ export const engineeringThree: EngineeringLevelConfig = {
     "You will write two things:",
     "<ul><li>A helper function which is small, single-purpose, and reusable</li><li>Your main code which uses the helper inside a loop</li> ",
 
-    "<code>engineeringThree.recalibrate()</code> is an available function",
+    "<code>engineeringThree.recalibrate()</code> is an available function which takes an <code>id</code> value.",
 
     '<span class="tip"><strong>Tip</strong>: In a loop, use your helper to check each sensor in the array</span>',
   ],
@@ -89,6 +89,8 @@ export const engineeringThree: EngineeringLevelConfig = {
 function isInRange(value, min, max) {
 
 }
+
+console.log(sensors)
 
 // Recalibrate sensors that are out of range
 for (const sensor of sensors) {

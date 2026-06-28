@@ -102,15 +102,16 @@ export const canteenTwo: CanteenLevelConfig = {
     "Go through today's orders to find which contains a suspicious ingredient. Check each item against the possible suspicious ingredients list provided.",
     "Flag the orders and report which substances were used.",
 
-    '<span class="tip"><strong>Tip</strong>: You can also check if an item is in a list using <code>array.includes(value)</code>. For example, <code>[\'a\', \'b\', \'c\'].includes(\'b\')</code> returns <code>true</code></span>',
+    "<span class=\"tip\"><strong>Tip</strong>: You can also check if an item is in a list using <code>array.includes(value)</code>. For example, <code>['a', 'b', 'c'].includes('b')</code> returns <code>true</code></span>",
   ],
 
   starterCode: `// Write code to flag an order
 // and report an ingredient
 
 console.log(todaysOrders[0])
-canteen.flagOrder(orderNumber)
-canteen.report(ingredient)
+console.log(possibleSuspiciousIngredients)
+canteen.flagOrder()
+canteen.report()
 `,
 
   solutionCode: `for (const order of todaysOrders) {

@@ -95,18 +95,30 @@ export const bridgeTwo: BridgeLevelConfig = {
     "<span class=\"tip\"><strong>Tip</strong>: <code>state</code> means each instance has its own <code>signalStrength</code>. Alpha's boost doesn't affect Beta.</span>",
   ],
 
-  starterCode: `// Complete the class
-  class CommRelay {
+  starterCode: `// Complete the CommRelay class below
+class CommRelay {
   constructor(name) {
+    // Store name and initialise signalStrength to 0
 
   }
+
   boost(amount) {
+    // Add amount to signalStrength
 
   }
+
   getStrength() {
+    // Return the current signalStrength
 
   }
 }
+
+// Pre-defined code
+// Do not modify
+const Alpha = new CommRelay("Alpha");
+const Beta  = new CommRelay("Beta");
+const Gamma = new CommRelay("Gamma");
+const Delta = new CommRelay("Delta");
 `,
 
   solutionCode: `class CommRelay {
@@ -114,13 +126,22 @@ export const bridgeTwo: BridgeLevelConfig = {
     this.name = name;
     this.signalStrength = 0;
   }
+
   boost(amount) {
     this.signalStrength += amount;
   }
+
   getStrength() {
     return this.signalStrength;
   }
 }
+
+// Pre-defined code
+// Do not modify
+const Alpha = new CommRelay("Alpha");
+const Beta  = new CommRelay("Beta");
+const Gamma = new CommRelay("Gamma");
+const Delta = new CommRelay("Delta");
 `,
 
   logbookContent: {

@@ -104,18 +104,22 @@ export class LandingScene extends Phaser.Scene {
     this.updateHighlights();
 
     if (!Save.hasSave()) {
-      this.card1.sprite.setInteractive({ useHandCursor: true });
-      this.card1.sprite.on("pointerdown", () => {
-        this.selectedHeroId = "hero-1";
-        this.updateHighlights();
-      });
-
-      this.card2.sprite.setInteractive({ useHandCursor: true });
-      this.card2.sprite.on("pointerdown", () => {
-        this.selectedHeroId = "hero-2";
-        this.updateHighlights();
-      });
+      this.enableHeroCardSelection();
     }
+  }
+
+  private enableHeroCardSelection(): void {
+    this.card1.sprite.setInteractive({ useHandCursor: true });
+    this.card1.sprite.on("pointerdown", () => {
+      this.selectedHeroId = "hero-1";
+      this.updateHighlights();
+    });
+
+    this.card2.sprite.setInteractive({ useHandCursor: true });
+    this.card2.sprite.on("pointerdown", () => {
+      this.selectedHeroId = "hero-2";
+      this.updateHighlights();
+    });
   }
 
   private createHeroCard(characterId: string, x: number, y: number, animOffset: number): HeroCard {
@@ -303,6 +307,7 @@ export class LandingScene extends Phaser.Scene {
       Save.clear();
       Statistics.clearAll();
       this.refreshButtons();
+      this.enableHeroCardSelection();
     });
     panel.push(confirmBg, confirmLbl);
 

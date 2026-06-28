@@ -100,7 +100,6 @@ class Dictionary {
   constructor(phraseMapping) {
     this.phraseMapping = phraseMapping;
   }
-
   translate(phrase) {
     return this.phraseMapping[phrase] ?? phrase;
   }
@@ -108,12 +107,13 @@ class Dictionary {
 
 // Define your Translator class
 class Translator {
-  constructor(communicator, dictionary) {
+  constructor() {
   // Your code to store both on the instance
   }
 
   speakTo(alienPhrase) {
-  // Your code to translate using the dictionary, then send using the communicator
+  // Your code to translate using the dictionary
+  // then send using the communicator
   }
 }
 
@@ -138,7 +138,6 @@ class Dictionary {
   constructor(phraseMapping) {
     this.phraseMapping = phraseMapping;
   }
-
   translate(phrase) {
     return this.phraseMapping[phrase] ?? phrase;
   }
