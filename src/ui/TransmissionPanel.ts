@@ -86,7 +86,6 @@ export class TransmissionPanel {
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
 
-    // --- Open panel ---
     const bg = scene.add.graphics();
     bg.fillStyle(BG_COLOR, 0.96);
     bg.fillRoundedRect(-PANEL_W / 2, -PANEL_H / 2, PANEL_W, PANEL_H, 6);
@@ -165,7 +164,6 @@ export class TransmissionPanel {
     this.container.setDepth(DEPTH);
     this.container.setVisible(false);
 
-    // --- Mini icon ---
     this.miniIcon = scene.add.image(MINI_X, MINI_Y, "terminal-closed");
     this.miniIcon.setDisplaySize(ICON_DISPLAY_W, ICON_DISPLAY_H);
     this.miniIcon.setOrigin(ICON_ORIGIN_X, ICON_ORIGIN_Y);
@@ -186,7 +184,6 @@ export class TransmissionPanel {
     this.combinedValueText.setText(`0 / ${data.threshold}`);
     this.combinedBarFill.width = 0;
 
-    // Destroy any existing relay rows
     for (const row of this.relayRows) {
       row.nameText.destroy();
       row.barBg.destroy();

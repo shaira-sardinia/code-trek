@@ -18,7 +18,6 @@ export interface EngineeringCalibrationRunResult {
   consoleOutput: ConsoleEntry[];
 }
 
-// Console-capture only — no simulation or validation.
 export function runEngineeringCode(code: string): EngineeringRunResult {
   const consoleOutput: ConsoleEntry[] = [];
 

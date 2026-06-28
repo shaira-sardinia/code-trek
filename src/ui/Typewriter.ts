@@ -172,7 +172,6 @@ function buildSnapshots(beat: string): string[] {
       current += tag;
       i = end + 1;
 
-      // <br> counts as a visible character (newline)
       if (tagName === "br") {
         snapshots.push(current + [...openTags].reverse().join(""));
       }

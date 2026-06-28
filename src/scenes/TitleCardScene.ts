@@ -27,13 +27,14 @@ export class TitleCardScene extends Phaser.Scene {
   }
 
   create() {
-    // Anchor top-centre of image to top-centre of canvas; image must be taller
-    // than GAME_H + (duration/1000 * driftSpeed) to avoid exposing a bottom edge.
     const tex = this.textures.get("card-starfield").getSourceImage() as HTMLImageElement;
     const duration = this.config.duration ?? 2500;
     const totalDrift = (10 * duration) / 1000;
     const scale = Math.max(GAME_W / tex.width, (GAME_H + totalDrift) / tex.height);
-    this.starfield = this.add.image(GAME_W / 2, 0, "card-starfield").setOrigin(0.5, 0).setScale(scale);
+    this.starfield = this.add
+      .image(GAME_W / 2, 0, "card-starfield")
+      .setOrigin(0.5, 0)
+      .setScale(scale);
 
     const titleBottomY = this.createTitle(GAME_W / 2, GAME_H / 2);
 
@@ -56,7 +57,6 @@ export class TitleCardScene extends Phaser.Scene {
     });
   }
 
-  // Returns the Y coordinate of the bottom edge of the last rendered text.
   private createTitle(x: number, y: number): number {
     if (this.config.subtitle) {
       const title = this.add
@@ -77,7 +77,7 @@ export class TitleCardScene extends Phaser.Scene {
         .setAlpha(0);
       this.tweens.add({ targets: title, alpha: 1, duration: 800, ease: "Linear" });
       this.tweens.add({ targets: sub, alpha: 1, duration: 800, delay: 400, ease: "Linear" });
-      return (y + 20) + sub.height / 2;
+      return y + 20 + sub.height / 2;
     } else {
       const title = this.add
         .text(x, y, this.config.title, {
@@ -104,20 +104,21 @@ export class TitleCardScene extends Phaser.Scene {
       const x = startX + i * dotSpacing;
 
       if (isEnd || dotIndex < currentLevel) {
-        // Completed (or all filled for end-of-demo)
         const dot = this.add.circle(x, y, dotRadius, 0xffffff).setAlpha(0).setDepth(10);
         dotObjects.push(dot);
       } else if (dotIndex === currentLevel) {
-        // Current level: concentric ring
-        const outerRing = this.add.circle(x, y, dotRadius, 0xffffff, 0)
-          .setStrokeStyle(1.5, 0xffffff).setAlpha(0).setDepth(10);
-        const innerDot = this.add.circle(x, y, Math.round(dotRadius / 2.5), 0xffffff)
-          .setAlpha(0).setDepth(11);
+        const outerRing = this.add
+          .circle(x, y, dotRadius, 0xffffff, 0)
+          .setStrokeStyle(1.5, 0xffffff)
+          .setAlpha(0)
+          .setDepth(10);
+        const innerDot = this.add
+          .circle(x, y, Math.round(dotRadius / 2.5), 0xffffff)
+          .setAlpha(0)
+          .setDepth(11);
         dotObjects.push(outerRing, innerDot);
       } else {
-        // Future level: dim outline
-        const ring = this.add.circle(x, y, dotRadius, 0xffffff, 0)
-          .setStrokeStyle(1, 0x666688).setAlpha(0).setDepth(10);
+        const ring = this.add.circle(x, y, dotRadius, 0xffffff, 0).setStrokeStyle(1, 0x666688).setAlpha(0).setDepth(10);
         dotObjects.push(ring);
       }
     }
@@ -127,6 +128,6 @@ export class TitleCardScene extends Phaser.Scene {
 
   update(_time: number, delta: number): void {
     if (!this.drifting) return;
-    this.starfield.y -= (10 * delta) / 1000; // 10 px/s upward drift
+    this.starfield.y -= (10 * delta) / 1000;
   }
 }

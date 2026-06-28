@@ -20,15 +20,15 @@ const ORDERS: { orderNumber: number; items: string[] }[] = [
   { orderNumber: 1016, items: ["beans", "sausage", "bread"] },
   { orderNumber: 1017, items: ["rice", "lentils", "spinach"] },
   { orderNumber: 1018, items: ["juice", "yogurt", "fruit"] },
-  { orderNumber: 1019, items: ["soup", "bread", "compound-X12"] }, // SUSPECT
+  { orderNumber: 1019, items: ["soup", "bread", "compound-X12"] },
   { orderNumber: 1020, items: ["coffee", "ham", "cheese"] },
   { orderNumber: 1021, items: ["stew", "carrots", "salt"] },
   { orderNumber: 1022, items: ["porridge", "oats", "honey"] },
   { orderNumber: 1023, items: ["sandwich", "pickles", "tea"] },
-  { orderNumber: 1024, items: ["pasta", "agent-blue", "garlic"] }, // SUSPECT
+  { orderNumber: 1024, items: ["pasta", "agent-blue", "garlic"] },
   { orderNumber: 1025, items: ["cereal", "milk", "biscuits"] },
   { orderNumber: 1026, items: ["fish", "water", "salt"] },
-  { orderNumber: 1027, items: ["stew", "carrots", "compound-X12"] }, // SUSPECT
+  { orderNumber: 1027, items: ["stew", "carrots", "compound-X12"] },
   { orderNumber: 1028, items: ["eggs", "bacon", "mushrooms"] },
   { orderNumber: 1029, items: ["soup", "tomatoes", "bread"] },
   { orderNumber: 1030, items: ["tea", "honey", "toast"] },

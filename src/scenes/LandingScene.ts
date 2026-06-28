@@ -27,8 +27,7 @@ export class LandingScene extends Phaser.Scene {
   create(): void {
     const w = this.scale.width;
     const h = this.scale.height;
-    // Place hero group halfway between the title bottom and the screen bottom
-    const titleH = (Math.min(w, 800) * 293) / 955; // code-trek-title.png is 955×293
+    const titleH = (Math.min(w, 800) * 293) / 955;
     const titleBottom = Math.round(h * 0.26) + titleH / 2;
     this.spriteY = Math.round(titleBottom + (h - titleBottom) * 0.5);
     this.renderBackground();
@@ -85,7 +84,7 @@ export class LandingScene extends Phaser.Scene {
 
   private renderHeroCards(): void {
     const w = this.scale.width;
-    const spriteY = this.spriteY - 40; // shifted up to create gap above buttons
+    const spriteY = this.spriteY - 40;
     const card1X = w / 2 - 80;
     const card2X = w / 2 + 80;
 

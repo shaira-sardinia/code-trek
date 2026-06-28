@@ -12,9 +12,15 @@ import type { Typewriter } from "../ui/Typewriter";
 import type { Toolbar } from "../ui/Toolbar";
 import type { ConsolePanel } from "../ui/ConsolePanel";
 import {
-  EVENT_RUN_RESULT, EVENT_HANGAR_ARRIVAL_COMPLETE, EVENT_CANTEEN_PUZZLE_COMPLETE,
-  EVENT_CUTSCENE_COMPLETE, EVENT_TITLECARD_COMPLETE,
-  EVENT_TRANSITION_CLOSE, EVENT_TRANSITION_OPEN, EVENT_TRANSITION_CLOSED, EVENT_TRANSITION_OPENED,
+  EVENT_RUN_RESULT,
+  EVENT_HANGAR_ARRIVAL_COMPLETE,
+  EVENT_CANTEEN_PUZZLE_COMPLETE,
+  EVENT_CUTSCENE_COMPLETE,
+  EVENT_TITLECARD_COMPLETE,
+  EVENT_TRANSITION_CLOSE,
+  EVENT_TRANSITION_OPEN,
+  EVENT_TRANSITION_CLOSED,
+  EVENT_TRANSITION_OPENED,
 } from "../events";
 
 export interface TransitionsContext {
@@ -46,7 +52,9 @@ export class Transitions {
   public start(): void {
     const { game } = this.ctx;
     game.events.on(EVENT_RUN_RESULT, (r: RunResultPayload) => this.handleRunResult(r));
-    game.events.on(EVENT_HANGAR_ARRIVAL_COMPLETE, (config: HangarLevelConfig) => this.handleHangarArrivalComplete(config));
+    game.events.on(EVENT_HANGAR_ARRIVAL_COMPLETE, (config: HangarLevelConfig) =>
+      this.handleHangarArrivalComplete(config),
+    );
     game.events.on(EVENT_CANTEEN_PUZZLE_COMPLETE, () => this.handleCanteenPuzzleComplete());
     game.events.on(EVENT_CUTSCENE_COMPLETE, (args: { cx: number; cy: number }) => this.handleCutsceneComplete(args));
     game.events.on(EVENT_TITLECARD_COMPLETE, (args: { cx: number; cy: number }) => this.handleTitleCardComplete(args));
@@ -67,8 +75,6 @@ export class Transitions {
     }
   }
 
-  // ── Private helpers ─────────────────────────────────────────────────────────
-
   private isSeamlessTransition(current: ProgressionEntry, next: ProgressionEntry | null): boolean {
     if (!next) return false;
     return !!(current as { seamless?: boolean }).seamless && !!(next as { seamless?: boolean }).seamless;
@@ -77,8 +83,6 @@ export class Transitions {
   private entryOrigin(entry: ProgressionEntry): { x: number; y: number } {
     return entry.startPosition ? tileToPixel(entry.startPosition) : { x: GAME_W / 2, y: GAME_H / 2 };
   }
-
-  // ── Event handlers ──────────────────────────────────────────────────────────
 
   private handleRunResult(result: RunResultPayload): void {
     const { consolePanel, editor, typewriter, sceneRouter, levelManager, game } = this.ctx;

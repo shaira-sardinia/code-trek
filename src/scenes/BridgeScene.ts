@@ -48,26 +48,28 @@ export class BridgeScene extends BaseGridScene {
     this.placeCharacter(this.config.startPosition, this.config.appearance ?? "default");
 
     const cap = this.config.captain;
-    this.captain = new AnimatedNPC(this, cap.patrol
-      ? {
-          characterId: cap.characterId,
-          waypoints: cap.patrol.waypoints,
-          initialFacing: "right",
-          dwellFacing: cap.patrol.dwellFacing,
-          dwellFacings: cap.patrol.dwellFacings,
-          dwellTimes: cap.patrol.dwellTimes,
-          preMoveFacing: cap.patrol.preMoveFacing,
-          preMoveDelay: cap.patrol.preMoveDelay,
-          moveDuration: cap.patrol.moveDuration ?? 600,
-          bob: cap.bobs ?? true,
-        }
-      : {
-          characterId: cap.characterId,
-          waypoints: [cap.position],
-          initialFacing: cap.facing,
-          bob: cap.bobs ?? true,
-          dwellTime: Number.MAX_SAFE_INTEGER,
-        },
+    this.captain = new AnimatedNPC(
+      this,
+      cap.patrol
+        ? {
+            characterId: cap.characterId,
+            waypoints: cap.patrol.waypoints,
+            initialFacing: "right",
+            dwellFacing: cap.patrol.dwellFacing,
+            dwellFacings: cap.patrol.dwellFacings,
+            dwellTimes: cap.patrol.dwellTimes,
+            preMoveFacing: cap.patrol.preMoveFacing,
+            preMoveDelay: cap.patrol.preMoveDelay,
+            moveDuration: cap.patrol.moveDuration ?? 600,
+            bob: cap.bobs ?? true,
+          }
+        : {
+            characterId: cap.characterId,
+            waypoints: [cap.position],
+            initialFacing: cap.facing,
+            bob: cap.bobs ?? true,
+            dwellTime: Number.MAX_SAFE_INTEGER,
+          },
     );
     this.captain.start();
 
@@ -82,7 +84,6 @@ export class BridgeScene extends BaseGridScene {
     }
 
     if (isRelayPuzzle) {
-      // Sub-puzzle 2: crew stations are already in place, spawn them statically
       const animatedCharIds = new Set((this.config.animatedNpcs ?? []).map((n) => n.characterId));
       if (this.config.stations) {
         for (const station of this.config.stations) {
@@ -92,7 +93,6 @@ export class BridgeScene extends BaseGridScene {
         }
       }
     } else {
-      // Sub-puzzle 1: green highlights, spawn NPCs on run-code
       if (this.config.stations) {
         for (const station of this.config.stations) {
           const { x, y } = tileToPixel(station.position);
@@ -138,7 +138,6 @@ export class BridgeScene extends BaseGridScene {
     const onResetLevel = () => this.resetPlayerPosition();
     const onLevelChanged = (_entry: ProgressionEntry) => {
       if (isBridgeLevelConfig(_entry)) {
-        // Within-bridge transitions handled by future briefs
       }
     };
 
@@ -160,8 +159,14 @@ export class BridgeScene extends BaseGridScene {
       for (const npc of this.animatedNpcList) npc.destroy();
       this.animatedNpcList = [];
       this.clearStations();
-      if (this.logbook) { this.logbook.destroy(); this.logbook = null; }
-      if (this.transmissionPanel) { this.transmissionPanel.destroy(); this.transmissionPanel = null; }
+      if (this.logbook) {
+        this.logbook.destroy();
+        this.logbook = null;
+      }
+      if (this.transmissionPanel) {
+        this.transmissionPanel.destroy();
+        this.transmissionPanel = null;
+      }
     });
   }
 

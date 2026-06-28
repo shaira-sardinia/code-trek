@@ -39,11 +39,9 @@ export class TrustMeter {
 
     this.barGraphics.clear();
 
-    // Background
     this.barGraphics.fillStyle(0x333333, 0.8);
     this.barGraphics.fillRect(bx, by, this.BAR_WIDTH, this.BAR_HEIGHT);
 
-    // Gradient fill: red → yellow → green split at mid-point
     if (fillWidth > 0) {
       const half = this.BAR_WIDTH / 2;
       if (fillWidth <= half) {
@@ -80,7 +78,10 @@ export class TrustMeter {
 
   flash(): void {
     const { bx, by, BAR_WIDTH, BAR_HEIGHT, DEPTH } = this;
-    const overlay = this.scene.add.graphics().setDepth(DEPTH + 1).setAlpha(0);
+    const overlay = this.scene.add
+      .graphics()
+      .setDepth(DEPTH + 1)
+      .setAlpha(0);
     overlay.fillStyle(0xff2222, 1);
     overlay.fillRect(bx, by, BAR_WIDTH, BAR_HEIGHT);
     this.scene.tweens.add({
