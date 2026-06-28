@@ -2,7 +2,7 @@ import { computeChecksum, verifyChecksum } from "../utils/integrity";
 
 const STORAGE_KEY = "code-trek:stats:v1";
 
-export const MAX_CHEATS_PER_SESSION = 100;
+export const MAX_CHEATS_PER_SESSION = 2;
 
 export interface PerPuzzleAttempts {
   [entryId: string]: number;

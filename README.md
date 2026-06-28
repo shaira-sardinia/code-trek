@@ -24,12 +24,12 @@ Open `http://localhost:5173` in your browser.
 
 ## Game Structure
 
-The game is a linear progression of scenes across three locations aboard a spaceship:
+The game is a linear progression of scenes across three levels aboard a spaceship:
 
-1. **Intro** — orientation and movement tutorial
-2. **Canteen** — first coding puzzles (functions and basic logic)
-3. **Engineering** — intermediate puzzles
-4. **Bridge** — advanced puzzles (OOP: classes, constructors, methods)
+1. **Intro** for orientation and movement tutorial
+2. **The Canteen** for first coding puzzles (functions and basic logic)
+3. **Engineering Deck** for intermediate puzzles
+4. **Command Bridge** for advanced puzzles (OOP: classes, constructors, methods)
 
 Each location has arrival cutscenes, one or more coding levels, and a resolution cutscene before moving on.
 
