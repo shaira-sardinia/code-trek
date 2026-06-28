@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/assets/ship.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code-Trek</title>
+  </head>
+  <body>
+    <div id="app" class="landing-active">
+      <div id="game-container"></div>
+      <div id="dialogue-panel">
+        <div id="dialogue-text">Loading...</div>
+        <div id="dialogue-controls">
+          <button id="dialogue-skip" aria-label="Skip typing" title="Show all">
+            <span>▶</span>
+          </button>
+        </div>
+      </div>
+      <div id="editor-panel">
+        <div id="editor-toolbar">
+          <span id="level-title">Level 1: Awakening</span>
+          <div class="toolbar-actions">
+            <button id="show-solution-button" class="show-solution-button" disabled title="Cheats remaining: 2">Show Solution</button>
+            <button id="run-button" disabled>Run</button>
+          </div>
+        </div>
+        <div id="editor-container"></div>
+        <div id="console-panel" class="collapsed">
+          <button id="console-toggle">
+            <span id="console-chevron">▸</span>
+            <span>Console</span>
+          </button>
+          <div id="console-output"></div>
+        </div>
+      </div>
+    </div>
+    <div id="end-of-demo-summary" class="end-of-demo-summary" style="display: none;">
+      <div class="end-of-demo-summary__panel">
+        <button class="end-of-demo-summary__copy-btn" id="summary-copy-btn" title="Copy stats to clipboard">Copy</button>
+        <h1 class="end-of-demo-summary__title">Thanks for playing!</h1>
+        <p class="end-of-demo-summary__subtitle">Here are your summary stats</p>
+
+        <div class="end-of-demo-summary__section">
+          <h2>Session Duration</h2>
+          <p class="end-of-demo-summary__value" id="summary-session-duration">--</p>
+        </div>
+
+        <div class="end-of-demo-summary__section">
+          <h2>Time per Level</h2>
+          <table class="end-of-demo-summary__table" id="summary-level-times"></table>
+        </div>
+
+        <div class="end-of-demo-summary__section">
+          <h2>Attempts per Puzzle</h2>
+          <table class="end-of-demo-summary__table" id="summary-puzzle-attempts"></table>
+        </div>
+
+        <div class="end-of-demo-summary__section" id="summary-hints-section">
+          <h2>Hints Used</h2>
+          <p class="end-of-demo-summary__value" id="summary-hints-total">--</p>
+          <table class="end-of-demo-summary__table" id="summary-hints-breakdown"></table>
+        </div>
+
+        <button class="end-of-demo-summary__button" id="summary-start-over">Start Over</button>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

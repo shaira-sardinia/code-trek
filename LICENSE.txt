@@ -1,0 +1,82 @@
+CODE TREK — THIRD-PARTY ASSET ATTRIBUTION
+==========================================
+
+Code Trek uses third-party art assets licensed from their creators
+via itch.io. All assets remain the property of their respective
+creators and are used in accordance with each creator's terms of
+use. The raw asset files are not redistributed as standalone
+resources.
+
+Where a creator does not provide a named/standard license (e.g.
+Creative Commons), the asset is used under that creator's own
+itch.io terms as stated on the asset page; those terms are
+summarised below for each pack.
+
+------------------------------------------
+SPRITES — Characters & Robots
+------------------------------------------
+Creator : Maru (maru-98)
+Source  : https://maru-98.itch.io
+Pack    : Sci-Fi Characters & Robots 16x16 — Top-Down Bundle
+          (12 Animated Units)
+Terms   : Commercial use permitted in game projects.
+          Modification permitted.
+          Redistribution of the raw assets as standalone
+          resources is not permitted.
+License : No named license provided; used under the creator's
+          itch.io terms (see above).
+Note    : Hand-made pixel art. No generative AI was used.
+
+
+------------------------------------------
+SPRITES — Arcade-Style Aliens
+------------------------------------------
+Creator : CheckpointCafé.Dev
+Source  : https://checkpointcafe.itch.io/arcadestyleghosts
+Pack    : Arcade Style Aliens (sprite sheet)
+Contact : CheckpointCafe.Dev@gmail.com
+Terms   : Free to use in personal and commercial projects.
+          Modification permitted.
+          May NOT be redistributed or resold, in part or whole,
+          as part of any game asset pack.
+          Credit appreciated but not required (provided here).
+License : No named license provided; used under the creator's
+          itch.io terms (see above).
+Palette : Pear36 by PineappleOnPizza
+          https://lospec.com/palette-list/pear36
+          (Lospec palette, free to use; no license obligation.)
+
+
+------------------------------------------
+TILESETS — Spaceship Interior
+------------------------------------------
+Creator : Cute SCKR (comshadow)
+Source  : https://comshadow.itch.io/sci-fi-spaceship-interior-tileset-pack
+Pack    : Sci-Fi Spaceship Interior Tileset Pack
+Terms   : Personal and commercial use permitted in game projects.
+          Do not resell or redistribute the assets as standalone
+          resources.
+          Attribution appreciated but not required (provided here).
+License : No named license provided; used under the creator's
+          itch.io terms (see above).
+Note    : Disclosed by the creator as AI-assisted graphics.
+
+
+------------------------------------------
+ENGINE & TOOLS
+------------------------------------------
+Phaser 3       — MIT License      — https://phaser.io
+Vite           — MIT License      — https://vitejs.dev
+Tiled          — GPLv2 (editor)   — https://www.mapeditor.org
+Monaco Editor  — MIT License      — https://microsoft.github.io/monaco-editor
+
+Phaser 3 and Monaco Editor are bundled in the built game; their
+MIT copyright and permission notices are retained. Vite (build
+tooling) and Tiled (the map editor) are used only at build time
+and are not distributed with the game, so their licenses impose
+no obligation on Code Trek's output.
+
+
+==========================================
+Code Trek is a GCU Honours Capstone Project by Shaira Sardinia © 2026
+==========================================
