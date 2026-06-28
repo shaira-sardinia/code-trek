@@ -12,10 +12,9 @@ export const hangarFirstContact: CutsceneConfig = {
   npcs: [{ characterId: "captain-astro", position: { col: 4, row: 5 }, facing: "up" }],
 
   alienPlaceholders: [
-    { col: 6, row: 2, facing: "down" },
-    { col: 8, row: 3, facing: "down" },
-    { col: 4, row: 3, facing: "down" },
-    { col: 9, row: 3, facing: "down" },
+    { col: 6, row: 2, facing: "down", alienId: "alien-3" },
+    { col: 8, row: 3, facing: "down", alienId: "alien-1" },
+    { col: 4, row: 3, facing: "down", alienId: "alien-2" },
   ],
 
   steps: [
@@ -50,9 +49,13 @@ export const hangarFirstContact: CutsceneConfig = {
     {
       type: "dialogue",
       speaker: "CAPTAIN QUARK",
-      text: "Then you are welcome aboard the Nebula as guests, and soon I hope as friends.",
+      text: "Then you are welcome aboard the Nebula as guests.",
       duration: 6500,
     },
+
+    { type: "wait", duration: 1000 },
+
+    { type: "aliens-state", state: "depart" },
 
     { type: "wait", duration: 800 },
 

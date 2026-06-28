@@ -5,6 +5,7 @@ import { LogbookOverlay } from "../ui/LogbookOverlay";
 import { AnimatedNPC } from "../entities/AnimatedNPC";
 import type { CutsceneConfig, CutsceneStep } from "../cutscenes/types";
 import type { LevelManager } from "../levels/LevelManager";
+import type { AlienState } from "../levels/types";
 import { GAME_W, GAME_H } from "../config";
 import { sceneDelay } from "../utils/tween";
 import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters/registry";
@@ -35,7 +36,7 @@ export class CutsceneScene extends BaseGridScene {
   private leadCharacterConfig?: CharacterConfig;
   private leadCharacterAppearance?: CharacterAppearance;
 
-  private alienRects: Phaser.GameObjects.Rectangle[] = [];
+  private alienSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private whiteOverlay: Phaser.GameObjects.Graphics | null = null;
   private npcPositions: Map<string, { col: number; row: number }> = new Map();
 
@@ -85,13 +86,15 @@ export class CutsceneScene extends BaseGridScene {
       }
     }
 
-    this.alienRects = [];
-    for (const pos of this.config.alienPlaceholders ?? []) {
-      const wx = pos.col * TILE_SIZE + TILE_SIZE / 2;
-      const wy = pos.row * TILE_SIZE + TILE_SIZE / 2;
-      const rect = this.add.rectangle(wx, wy, TILE_SIZE - 4, TILE_SIZE - 4, 0xff0000, 0.6);
-      rect.setDepth(5);
-      this.alienRects.push(rect);
+    this.alienSprites = new Map();
+    for (const alien of this.config.alienPlaceholders ?? []) {
+      const wx = alien.col * TILE_SIZE + TILE_SIZE / 2;
+      const wy = alien.row * TILE_SIZE + TILE_SIZE / 2;
+      const sprite = this.add.sprite(wx, wy, `${alien.alienId}-idle`, 0);
+      sprite.setDepth(5);
+      sprite.setScale(3);
+      sprite.play(`${alien.alienId}-idle`);
+      this.alienSprites.set(alien.alienId, sprite);
     }
 
     this.animatedNpcList = [];
@@ -144,8 +147,8 @@ export class CutsceneScene extends BaseGridScene {
       this.animatedNpcList = [];
       this.clearNpcs();
       this.npcPositions.clear();
-      for (const r of this.alienRects) r.destroy();
-      this.alienRects = [];
+      for (const s of this.alienSprites.values()) s.destroy();
+      this.alienSprites = new Map();
       if (this.leadSprite) { this.leadSprite.destroy(); this.leadSprite = undefined; }
       this.leadPosition = undefined;
       this.leadCharacterConfig = undefined;
@@ -222,7 +225,7 @@ export class CutsceneScene extends BaseGridScene {
 
       case "show-speech-bubble": {
         const worldX = step.anchor.col * TILE_SIZE + TILE_SIZE / 2;
-        const worldY = step.anchor.row * TILE_SIZE + TILE_SIZE / 2;
+        const worldY = step.anchor.row * TILE_SIZE - 36;
         const bubble = new SpeechBubble({
           scene: this,
           text: step.text,
@@ -285,6 +288,10 @@ export class CutsceneScene extends BaseGridScene {
         entry.sprite.setTexture(appearance.idleSpritesheetKey, idleFrameForFacing(step.direction));
         return Promise.resolve();
       }
+
+      case "aliens-state":
+        this.setAlienState(step.state);
+        return Promise.resolve();
     }
   }
 
@@ -374,6 +381,25 @@ export class CutsceneScene extends BaseGridScene {
     }
     this.character.stop();
     this.character.setTexture(this.activeAppearance.idleSpritesheetKey, idleFrameForFacing(this.characterFacing));
+  }
+
+  private setAlienState(state: AlienState): void {
+    for (const [alienId, sprite] of this.alienSprites) {
+      switch (state) {
+        case "spawn":
+        case "idle":
+        case "angry":
+          if (sprite.visible) sprite.play(`${alienId}-${state}`);
+          break;
+        case "depart": {
+          const animDuration = 1000;
+          sprite.once("animationcomplete", () => sprite.setVisible(false));
+          this.tweens.add({ targets: sprite, alpha: 0, duration: animDuration, ease: "Linear" });
+          sprite.play(`${alienId}-depart`);
+          break;
+        }
+      }
+    }
   }
 
   private fadeToWhite(duration: number): Promise<void> {

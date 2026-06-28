@@ -20,14 +20,15 @@ export class LandingScene extends Phaser.Scene {
   }
 
   init(): void {
-    this.selectedHeroId = "hero-1";
+    const saved = Save.load();
+    this.selectedHeroId = saved?.selectedHeroId ?? "hero-1";
   }
 
   create(): void {
     const w = this.scale.width;
     const h = this.scale.height;
     // Place hero group halfway between the title bottom and the screen bottom
-    const titleH = Math.min(w, 800) * 293 / 955; // code-trek-title.png is 955×293
+    const titleH = (Math.min(w, 800) * 293) / 955; // code-trek-title.png is 955×293
     const titleBottom = Math.round(h * 0.26) + titleH / 2;
     this.spriteY = Math.round(titleBottom + (h - titleBottom) * 0.5);
     this.renderBackground();
@@ -79,7 +80,7 @@ export class LandingScene extends Phaser.Scene {
     const h = this.scale.height;
     const titleW = Math.min(w, 800);
     const img = this.add.image(w / 2, Math.round(h * 0.26), "code-trek-title").setDepth(10);
-    img.setDisplaySize(titleW, titleW * img.height / img.width);
+    img.setDisplaySize(titleW, (titleW * img.height) / img.width);
   }
 
   private renderHeroCards(): void {
@@ -102,17 +103,19 @@ export class LandingScene extends Phaser.Scene {
 
     this.updateHighlights();
 
-    this.card1.sprite.setInteractive({ useHandCursor: true });
-    this.card1.sprite.on("pointerdown", () => {
-      this.selectedHeroId = "hero-1";
-      this.updateHighlights();
-    });
+    if (!Save.hasSave()) {
+      this.card1.sprite.setInteractive({ useHandCursor: true });
+      this.card1.sprite.on("pointerdown", () => {
+        this.selectedHeroId = "hero-1";
+        this.updateHighlights();
+      });
 
-    this.card2.sprite.setInteractive({ useHandCursor: true });
-    this.card2.sprite.on("pointerdown", () => {
-      this.selectedHeroId = "hero-2";
-      this.updateHighlights();
-    });
+      this.card2.sprite.setInteractive({ useHandCursor: true });
+      this.card2.sprite.on("pointerdown", () => {
+        this.selectedHeroId = "hero-2";
+        this.updateHighlights();
+      });
+    }
   }
 
   private createHeroCard(characterId: string, x: number, y: number, animOffset: number): HeroCard {
@@ -120,11 +123,16 @@ export class LandingScene extends Phaser.Scene {
     const appearance = charConfig ? getAppearance(charConfig) : undefined;
     const idleKey = appearance?.idleSpritesheetKey ?? `${characterId}-idle`;
 
-    const sprite = this.add.sprite(x, y, idleKey, 1).setScale(3).setDepth(6);
+    const frameH = appearance?.idleFrameHeight ?? 48;
+    const SCALE = 3;
+    const REF_FRAME_H = 48;
+    const spriteY = y + ((frameH - REF_FRAME_H) * SCALE) / 2;
+
+    const sprite = this.add.sprite(x, spriteY, idleKey, 1).setScale(SCALE).setDepth(6);
 
     this.tweens.add({
       targets: sprite,
-      y: y - 5,
+      y: spriteY - 5,
       duration: 950,
       ease: "Sine.easeInOut",
       yoyo: true,
@@ -172,12 +180,18 @@ export class LandingScene extends Phaser.Scene {
     if (hasSave) {
       this.makeButton(leftX, buttonY, bW, bH, "Continue", "continue", () => this.onContinue());
       this.makeButton(leftX + bW + gap, buttonY, bW, bH, "Restart", "danger", () => this.showRestartConfirmation());
-      this.makeButton(leftX + 2 * (bW + gap), buttonY, bW, bH, "How to Play", "secondary", () => this.onShowHowToPlay());
-      this.makeButton(leftX + 3 * (bW + gap), buttonY, bW, bH, "More Info", "secondary", () => this.onShowInstructions());
+      this.makeButton(leftX + 2 * (bW + gap), buttonY, bW, bH, "How to Play", "secondary", () =>
+        this.onShowHowToPlay(),
+      );
+      this.makeButton(leftX + 3 * (bW + gap), buttonY, bW, bH, "More Info", "secondary", () =>
+        this.onShowInstructions(),
+      );
     } else {
       this.makeButton(leftX, buttonY, bW, bH, "Start Game", "primary", () => this.onStartGame());
       this.makeButton(leftX + bW + gap, buttonY, bW, bH, "How to Play", "secondary", () => this.onShowHowToPlay());
-      this.makeButton(leftX + 2 * (bW + gap), buttonY, bW, bH, "More Info", "secondary", () => this.onShowInstructions());
+      this.makeButton(leftX + 2 * (bW + gap), buttonY, bW, bH, "More Info", "secondary", () =>
+        this.onShowInstructions(),
+      );
     }
   }
 
@@ -188,23 +202,32 @@ export class LandingScene extends Phaser.Scene {
   }
 
   private makeButton(
-    x: number, y: number, w: number, h: number,
-    label: string, style: "primary" | "continue" | "danger" | "secondary",
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    label: string,
+    style: "primary" | "continue" | "danger" | "secondary",
     cb: () => void,
   ): void {
     const styles = {
-      primary:   { fill: 0x1e4080, stroke: 0x5580cc, hover: 0x2a55aa, text: "#ffffff",  bold: true  },
-      continue:  { fill: 0x1a5034, stroke: 0x44aa66, hover: 0x226644, text: "#aaffcc",  bold: true  },
-      danger:    { fill: 0x4a1a1a, stroke: 0xaa4444, hover: 0x6a2222, text: "#ffaaaa",  bold: false },
-      secondary: { fill: 0x222840, stroke: 0x445566, hover: 0x2e3850, text: "#aabbcc",  bold: false },
+      primary: { fill: 0x1e4080, stroke: 0x5580cc, hover: 0x2a55aa, text: "#ffffff", bold: true },
+      continue: { fill: 0x1a5034, stroke: 0x44aa66, hover: 0x226644, text: "#aaffcc", bold: true },
+      danger: { fill: 0x4a1a1a, stroke: 0xaa4444, hover: 0x6a2222, text: "#ffaaaa", bold: false },
+      secondary: { fill: 0x222840, stroke: 0x445566, hover: 0x2e3850, text: "#aabbcc", bold: false },
     };
     const s = styles[style];
     const bg = this.add.rectangle(x, y, w, h, s.fill).setStrokeStyle(2, s.stroke).setDepth(8);
     bg.setInteractive({ useHandCursor: true });
-    const lbl = this.add.text(x, y, label, {
-      fontSize: "13px", color: s.text, fontFamily: "monospace",
-      ...(s.bold ? { fontStyle: "bold" } : {}),
-    }).setOrigin(0.5).setDepth(9);
+    const lbl = this.add
+      .text(x, y, label, {
+        fontSize: "13px",
+        color: s.text,
+        fontFamily: "monospace",
+        ...(s.bold ? { fontStyle: "bold" } : {}),
+      })
+      .setOrigin(0.5)
+      .setDepth(9);
     bg.on("pointerdown", cb);
     bg.on("pointerover", () => bg.setFillStyle(s.hover));
     bg.on("pointerout", () => bg.setFillStyle(s.fill));
@@ -219,38 +242,60 @@ export class LandingScene extends Phaser.Scene {
 
     const panel: Phaser.GameObjects.GameObject[] = [];
 
-    const overlay = this.add.rectangle(cx, cy, this.scale.width, this.scale.height, 0x000000, 0.55)
-      .setDepth(20).setInteractive();
+    const overlay = this.add
+      .rectangle(cx, cy, this.scale.width, this.scale.height, 0x000000, 0.55)
+      .setDepth(20)
+      .setInteractive();
     panel.push(overlay);
 
-    const bg = this.add.rectangle(cx, cy, panelW, panelH, 0x1a0a0a)
-      .setStrokeStyle(2, 0xaa4444).setDepth(21);
+    const bg = this.add.rectangle(cx, cy, panelW, panelH, 0x1a0a0a).setStrokeStyle(2, 0xaa4444).setDepth(21);
     panel.push(bg);
 
     panel.push(
-      this.add.text(cx, cy - 34, "Restart session?", {
-        fontSize: "13px", color: "#ffaaaa", fontFamily: "monospace", fontStyle: "bold",
-      }).setOrigin(0.5).setDepth(22),
+      this.add
+        .text(cx, cy - 34, "Restart session?", {
+          fontSize: "13px",
+          color: "#ffaaaa",
+          fontFamily: "monospace",
+          fontStyle: "bold",
+        })
+        .setOrigin(0.5)
+        .setDepth(22),
     );
 
     panel.push(
-      this.add.text(cx, cy - 14, "This will erase all saved progress.", {
-        fontSize: "11px", color: "#cc8888", fontFamily: "monospace",
-      }).setOrigin(0.5).setDepth(22),
+      this.add
+        .text(cx, cy - 14, "This will erase all saved progress.", {
+          fontSize: "11px",
+          color: "#cc8888",
+          fontFamily: "monospace",
+        })
+        .setOrigin(0.5)
+        .setDepth(22),
     );
 
-    const dismiss = () => { for (const o of panel) o.destroy(); };
+    const dismiss = () => {
+      for (const o of panel) o.destroy();
+    };
 
     const btnY = cy + 28;
     const btnW = 90;
     const btnH = 26;
     const btnGap = 16;
 
-    const confirmBg = this.add.rectangle(cx - (btnW / 2 + btnGap / 2), btnY, btnW, btnH, 0x4a1a1a)
-      .setStrokeStyle(2, 0xaa4444).setDepth(22).setInteractive({ useHandCursor: true });
-    const confirmLbl = this.add.text(cx - (btnW / 2 + btnGap / 2), btnY, "Confirm", {
-      fontSize: "12px", color: "#ffaaaa", fontFamily: "monospace",
-    }).setOrigin(0.5).setDepth(23);
+    const confirmBg = this.add
+      .rectangle(cx - (btnW / 2 + btnGap / 2), btnY, btnW, btnH, 0x4a1a1a)
+      .setStrokeStyle(2, 0xaa4444)
+      .setDepth(22)
+      .setInteractive({ useHandCursor: true });
+    const confirmLbl = this.add
+      .text(cx - (btnW / 2 + btnGap / 2), btnY, "Confirm", {
+        fontSize: "12px",
+        color: "#ffaaaa",
+        fontFamily: "monospace",
+      })
+      .setOrigin(0.5)
+      .setDepth(23);
     confirmBg.on("pointerover", () => confirmBg.setFillStyle(0x6a2222));
     confirmBg.on("pointerout", () => confirmBg.setFillStyle(0x4a1a1a));
     confirmBg.on("pointerdown", () => {
@@ -261,11 +306,19 @@ export class LandingScene extends Phaser.Scene {
     });
     panel.push(confirmBg, confirmLbl);
 
-    const cancelBg = this.add.rectangle(cx + (btnW / 2 + btnGap / 2), btnY, btnW, btnH, 0x222840)
-      .setStrokeStyle(2, 0x445566).setDepth(22).setInteractive({ useHandCursor: true });
-    const cancelLbl = this.add.text(cx + (btnW / 2 + btnGap / 2), btnY, "Cancel", {
-      fontSize: "12px", color: "#aabbcc", fontFamily: "monospace",
-    }).setOrigin(0.5).setDepth(23);
+    const cancelBg = this.add
+      .rectangle(cx + (btnW / 2 + btnGap / 2), btnY, btnW, btnH, 0x222840)
+      .setStrokeStyle(2, 0x445566)
+      .setDepth(22)
+      .setInteractive({ useHandCursor: true });
+    const cancelLbl = this.add
+      .text(cx + (btnW / 2 + btnGap / 2), btnY, "Cancel", {
+        fontSize: "12px",
+        color: "#aabbcc",
+        fontFamily: "monospace",
+      })
+      .setOrigin(0.5)
+      .setDepth(23);
     cancelBg.on("pointerover", () => cancelBg.setFillStyle(0x2e3850));
     cancelBg.on("pointerout", () => cancelBg.setFillStyle(0x222840));
     cancelBg.on("pointerdown", dismiss);

@@ -1,7 +1,7 @@
 import { Statistics } from "../managers/StatisticsManager";
 import { BaseGridScene } from "./BaseGridScene";
 import { LogbookOverlay } from "../ui/LogbookOverlay";
-import { tileToPixel, TILE_SIZE } from "../utils/grid";
+import { tileToPixel } from "../utils/grid";
 import { sceneDelay } from "../utils/tween";
 import { isCanteenLevelConfig } from "../levels/types";
 import type { CanteenLevelConfig, ProgressionEntry, TileCoord } from "../levels/types";
@@ -176,7 +176,7 @@ export class CanteenScene extends BaseGridScene {
       const d = deltas[facing];
       const { x, y } = tileToPixel({ col: pos.col + d.col, row: pos.row + d.row });
       const color = success ? 0x3fb950 : 0xff7b72;
-      const circle = this.add.circle(x + TILE_SIZE / 2, y + TILE_SIZE / 2, 12, color, 0.8);
+      const circle = this.add.circle(x, y, 12, color, 0.8);
       circle.setDepth(10000);
       this.tweens.add({
         targets: circle,

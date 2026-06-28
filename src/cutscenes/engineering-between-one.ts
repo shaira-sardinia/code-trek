@@ -52,13 +52,13 @@ export const engineeringBetweenOne: CutsceneConfig = {
     {
       type: "dialogue",
       speaker: "MILES",
-      text: "If a component is serious, say severity 7 or higher, we need to get people out of the zone as those are dangerous.",
+      text: "If a component has a severity of 7 or higher, we need to get people out of the zone as those are dangerous.",
       duration: 6000,
     },
     {
       type: "dialogue",
       speaker: "MILES",
-      text: "Valves below that will need manual override.",
+      text: "For valves below that severity, we will need manual override.",
       duration: 5000,
     },
     {

@@ -27,6 +27,13 @@ export abstract class BaseGridScene extends Phaser.Scene {
     if (seamlessEntry) this.cameras.main.fadeIn(200, 255, 255, 255);
   }
 
+  getPlayerPixelPos(): { x: number; y: number } {
+    return {
+      x: this.character.x,
+      y: this.character.y - this.character.displayHeight / 2,
+    };
+  }
+
   protected charPixelPos(pos: { col: number; row: number }): { x: number; y: number } {
     const { x, y } = tileToPixel(pos);
     return { x, y: y + (this.activeAppearance.walkFrameHeight * 3) / 2 };

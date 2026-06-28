@@ -102,7 +102,7 @@ export const canteenBetween: CutsceneConfig = {
     {
       type: "dialogue",
       speaker: "KIRA",
-      text: "We've also got intelligence on possible suspicious substances, though some might be harmless.",
+      text: "I also have a list of possible suspicious substances, though some might be harmless.",
       duration: 5000,
     },
     {

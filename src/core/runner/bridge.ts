@@ -161,7 +161,6 @@ export function runBridgeRelayTest(
     };
   }
 
-  // Instantiate each relay
   const instances: Record<string, PlayerInstance> = {};
   for (const relay of relays) {
     try {
@@ -175,7 +174,6 @@ export function runBridgeRelayTest(
     }
   }
 
-  // Verify expected methods exist (check on first instance)
   if (relays.length > 0) {
     const first = instances[relays[0].name];
     const methodsUsed = [...new Set(sequence.methodCalls.map((c) => c.method))];
@@ -211,7 +209,6 @@ export function runBridgeRelayTest(
     return { passed: false, resultLines: callErrors, consoleOutput };
   }
 
-  // Verify final states
   const verifyResults: { name: string; passed: boolean; actual: number }[] = [];
   const verifyErrors: string[] = [];
 

@@ -42,8 +42,26 @@ export const engineeringArrival: CutsceneConfig = {
     {
       type: "dialogue",
       speaker: "MILES",
-      text: "You made it! Are you here to deliver the news? Unfortunately, we are too late and all alarms are already going off.",
-      duration: 5000,
+      text: "Welcome, I'm the chief engineer.",
+      duration: 2500,
+    },
+    {
+      type: "dialogue",
+      speaker: "MILES",
+      text: "I'm the new crew member.",
+      duration: 2500,
+    },
+    {
+      type: "dialogue",
+      speaker: "MILES",
+      text: "Are you here to deliver the bad news?",
+      duration: 2500,
+    },
+    {
+      type: "dialogue",
+      speaker: "MILES",
+      text: "Unfortunately, we are too late and all alarms are already going off.",
+      duration: 2500,
     },
     {
       type: "dialogue",

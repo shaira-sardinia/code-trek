@@ -40,10 +40,9 @@ export const hangarOne: HangarLevelConfig = {
   },
 
   alienPlaceholders: [
-    { col: 6, row: 2, facing: "down" },
-    { col: 7, row: 3, facing: "down" },
-    { col: 4, row: 3, facing: "down" },
-    { col: 9, row: 3, facing: "down" },
+    { col: 6, row: 2, facing: "down", alienId: "alien-3" },
+    { col: 8, row: 3, facing: "down", alienId: "alien-1" },
+    { col: 4, row: 3, facing: "down", alienId: "alien-2" },
   ],
 
   speakerAlienPosition: { col: 6, row: 2 },

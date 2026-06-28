@@ -44,7 +44,7 @@ export const canteenArrival: CutsceneConfig = {
     {
       type: "dialogue",
       speaker: "KIRA",
-      text: "I could definitely use some help for the lunch rush. Can you get the correct drinks to those tables?",
+      text: "I could definitely use some help. Can you get the correct drinks to those tables?",
       duration: 3500,
     },
     {

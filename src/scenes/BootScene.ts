@@ -40,6 +40,17 @@ export class BootScene extends Phaser.Scene {
       }
     }
 
+    const alienFrameWidths: Record<string, number> = { "alien-1": 26, "alien-2": 32, "alien-3": 34 };
+    const alienStates = ["spawn", "idle", "angry", "depart"] as const;
+    for (const [alienId, frameWidth] of Object.entries(alienFrameWidths)) {
+      for (const state of alienStates) {
+        this.load.spritesheet(`${alienId}-${state}`, `assets/sprites/${alienId}-${state}.png`, {
+          frameWidth,
+          frameHeight: 18,
+        });
+      }
+    }
+
     this.load.on("complete", () => {
       console.log("All assets loaded successfully");
     });
@@ -72,6 +83,14 @@ export class BootScene extends Phaser.Scene {
           });
         }
       }
+    }
+
+    const alienIds = ["alien-1", "alien-2", "alien-3"] as const;
+    for (const alienId of alienIds) {
+      this.anims.create({ key: `${alienId}-spawn`, frames: this.anims.generateFrameNumbers(`${alienId}-spawn`, { start: 0, end: 7 }), frameRate: 8, repeat: 0 });
+      this.anims.create({ key: `${alienId}-idle`,  frames: this.anims.generateFrameNumbers(`${alienId}-idle`,  { start: 0, end: 7 }), frameRate: 4, repeat: -1 });
+      this.anims.create({ key: `${alienId}-angry`, frames: this.anims.generateFrameNumbers(`${alienId}-angry`, { start: 0, end: 7 }), frameRate: 4, repeat: -1 });
+      this.anims.create({ key: `${alienId}-depart`,frames: this.anims.generateFrameNumbers(`${alienId}-depart`,{ start: 0, end: 7 }), frameRate: 8, repeat: 0 });
     }
 
     console.log("BootScene create() called — ready to transition");

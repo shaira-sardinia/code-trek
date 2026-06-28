@@ -5,7 +5,11 @@ import { LogbookOverlay } from "../ui/LogbookOverlay";
 import { isEngineeringLevelConfig } from "../levels/types";
 import type { EngineeringLevelConfig, ProgressionEntry } from "../levels/types";
 import type { LevelManager } from "../levels/LevelManager";
-import { runEngineeringCode, runEngineeringFunctionTest, runEngineeringCalibrationCode } from "../core/runner/engineering";
+import {
+  runEngineeringCode,
+  runEngineeringFunctionTest,
+  runEngineeringCalibrationCode,
+} from "../core/runner/engineering";
 import { playBobEffect } from "../utils/effects";
 import { EVENT_RUN_CODE, EVENT_CLOSE_LOGBOOK, EVENT_RUN_RESULT } from "../events";
 
@@ -73,7 +77,6 @@ export class EngineeringScene extends BaseGridScene {
     const onResetLevel = () => this.resetPlayerPosition();
     const onLevelChanged = (_entry: ProgressionEntry) => {
       if (isEngineeringLevelConfig(_entry)) {
-        // Future briefs will handle sub-level transitions within engineering
       }
     };
     const onCloseLogbook = () => this.logbook?.close();
@@ -93,7 +96,10 @@ export class EngineeringScene extends BaseGridScene {
       this.miles = undefined;
       for (const robot of this.robots) robot.destroy();
       this.robots = [];
-      if (this.logbook) { this.logbook.destroy(); this.logbook = null; }
+      if (this.logbook) {
+        this.logbook.destroy();
+        this.logbook = null;
+      }
     });
   }
 

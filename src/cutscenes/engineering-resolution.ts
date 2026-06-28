@@ -55,7 +55,7 @@ export const engineeringResolution: CutsceneConfig = {
     {
       type: "dialogue",
       speaker: "MILES",
-      text: "Your work here matters. The captain's been briefed and he wants you on the bridge.",
+      text: "The captain's been briefed and he wants you on the bridge.",
       duration: 4500,
     },
     {

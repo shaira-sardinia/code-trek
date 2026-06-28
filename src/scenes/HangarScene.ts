@@ -8,7 +8,7 @@ import { runHangarClassTest, type HangarClassTestResult } from "../core/runner/h
 import { getCharacterById, getAppearance, walkAnimKey, idleFrameForFacing } from "../characters/registry";
 import type { CharacterAppearance } from "../characters/registry";
 import type { Direction } from "../core/GameAPI";
-import type { HangarLevelConfig, ProgressionEntry, TileCoord } from "../levels/types";
+import type { HangarLevelConfig, ProgressionEntry, TileCoord, AlienState } from "../levels/types";
 import type { LevelManager } from "../levels/LevelManager";
 import { sceneDelay } from "../utils/tween";
 import { addIdleBob } from "../utils/effects";
@@ -29,7 +29,7 @@ export class HangarScene extends BaseGridScene {
   private captainAppearance?: CharacterAppearance;
   private captainPosition?: TileCoord;
 
-  private alienRects: Phaser.GameObjects.Rectangle[] = [];
+  private alienSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
   private trustMeter?: TrustMeter;
   private cutsceneDialogue?: CutsceneDialogue;
   private activeBubble?: SpeechBubble;
@@ -49,7 +49,7 @@ export class HangarScene extends BaseGridScene {
     this.captainSprite = undefined;
     this.captainAppearance = undefined;
     this.captainPosition = undefined;
-    this.alienRects = [];
+    this.alienSprites = new Map();
     this.trustMeter = undefined;
     this.cutsceneDialogue = undefined;
     this.activeBubble = undefined;
@@ -67,12 +67,14 @@ export class HangarScene extends BaseGridScene {
     this.placeCharacter(this.config.startPosition, this.config.appearance ?? "default");
     this.placeCaptain(this.config.captain.startPosition, this.config.captain.facing);
 
-    for (const pos of this.config.alienPlaceholders ?? []) {
-      const wx = pos.col * TILE_SIZE + TILE_SIZE / 2;
-      const wy = pos.row * TILE_SIZE + TILE_SIZE / 2;
-      const rect = this.add.rectangle(wx, wy, TILE_SIZE - 4, TILE_SIZE - 4, 0xff0000, 0.6);
-      rect.setDepth(5);
-      this.alienRects.push(rect);
+    for (const alien of this.config.alienPlaceholders ?? []) {
+      const wx = alien.col * TILE_SIZE + TILE_SIZE / 2;
+      const wy = alien.row * TILE_SIZE + TILE_SIZE / 2;
+      const sprite = this.add.sprite(wx, wy, `${alien.alienId}-spawn`, 0);
+      sprite.setDepth(5);
+      sprite.setScale(3);
+      sprite.setVisible(false);
+      this.alienSprites.set(alien.alienId, sprite);
     }
 
     this.trustMeter = new TrustMeter(this, 16, 16, this.config.trustMeter?.initialValue ?? 50);
@@ -105,13 +107,28 @@ export class HangarScene extends BaseGridScene {
       this.game.events.off("reset-level", onResetLevel);
       this.game.events.off(EVENT_CLOSE_LOGBOOK, onCloseLogbook);
       this.levelManager.off("level-changed", onLevelChanged);
-      if (this.captainSprite) { this.captainSprite.destroy(); this.captainSprite = undefined; }
-      for (const r of this.alienRects) r.destroy();
-      this.alienRects = [];
-      if (this.trustMeter) { this.trustMeter.destroy(); this.trustMeter = undefined; }
-      if (this.cutsceneDialogue) { this.cutsceneDialogue.destroy(); this.cutsceneDialogue = undefined; }
-      if (this.activeBubble) { this.activeBubble.destroy(); this.activeBubble = undefined; }
-      if (this.logbook) { this.logbook.destroy(); this.logbook = null; }
+      if (this.captainSprite) {
+        this.captainSprite.destroy();
+        this.captainSprite = undefined;
+      }
+      for (const s of this.alienSprites.values()) s.destroy();
+      this.alienSprites = new Map();
+      if (this.trustMeter) {
+        this.trustMeter.destroy();
+        this.trustMeter = undefined;
+      }
+      if (this.cutsceneDialogue) {
+        this.cutsceneDialogue.destroy();
+        this.cutsceneDialogue = undefined;
+      }
+      if (this.activeBubble) {
+        this.activeBubble.destroy();
+        this.activeBubble = undefined;
+      }
+      if (this.logbook) {
+        this.logbook.destroy();
+        this.logbook = null;
+      }
     });
 
     this.runArrivalAnimation();
@@ -121,8 +138,6 @@ export class HangarScene extends BaseGridScene {
     super.update();
     if (this.captainSprite) this.captainSprite.setDepth(this.captainSprite.y);
   }
-
-  // ── Captain placement ───────────────────────────────────────────────────────
 
   private placeCaptain(pos: TileCoord, facing: Direction): void {
     const charConfig = getCharacterById(this.config.captain.characterId);
@@ -135,8 +150,6 @@ export class HangarScene extends BaseGridScene {
     this.captainSprite.setOrigin(0.5, 1);
     this.captainSprite.setDepth(y);
   }
-
-  // ── Arrival animation ───────────────────────────────────────────────────────
 
   private async runArrivalAnimation(): Promise<void> {
     const myId = ++this.arrivalRunId;
@@ -152,6 +165,7 @@ export class HangarScene extends BaseGridScene {
 
     this.startHeroBob();
     this.startCaptainBob();
+    this.setAlienState("spawn");
 
     if (this.trustMeter) await this.trustMeter.show();
     if (!alive()) return;
@@ -167,9 +181,8 @@ export class HangarScene extends BaseGridScene {
     const deltaRow = dest.row - from.row;
     let facing: Direction = this.config.captain.facing;
     if (deltaCol !== 0 || deltaRow !== 0) {
-      facing = Math.abs(deltaCol) >= Math.abs(deltaRow)
-        ? (deltaCol > 0 ? "right" : "left")
-        : (deltaRow > 0 ? "down" : "up");
+      facing =
+        Math.abs(deltaCol) >= Math.abs(deltaRow) ? (deltaCol > 0 ? "right" : "left") : deltaRow > 0 ? "down" : "up";
     }
 
     const { x: tx, y: ty } = this.npcPixelPos(dest, this.captainAppearance);
@@ -179,8 +192,10 @@ export class HangarScene extends BaseGridScene {
     await new Promise<void>((resolve) => {
       this.tweens.add({
         targets: this.captainSprite!,
-        x: tx, y: ty,
-        duration, ease: "Linear",
+        x: tx,
+        y: ty,
+        duration,
+        ease: "Linear",
         onComplete: () => resolve(),
       });
     });
@@ -199,20 +214,22 @@ export class HangarScene extends BaseGridScene {
     addIdleBob(this, this.captainSprite, this.captainSprite.y);
   }
 
-  // ── Puzzle execution ────────────────────────────────────────────────────────
-
+  /* Puzzle Execution */
   private async runCode(code: string): Promise<void> {
     Statistics.recordAttempt(this.config.id);
     const myRunId = ++this.exchangeRunId;
     const alive = () => this.exchangeRunId === myRunId;
 
-    if (this.activeBubble) { this.activeBubble.destroy(); this.activeBubble = undefined; }
+    if (this.activeBubble) {
+      this.activeBubble.destroy();
+      this.activeBubble = undefined;
+    }
     this.cutsceneDialogue?.hide();
     this.trustMeter?.setValue(this.config.trustMeter?.initialValue ?? 50);
+    this.setAlienState("idle");
 
     const result = runHangarClassTest(code, this.config);
 
-    // Show result lines and console immediately — don't wait for animations.
     this.game.events.emit(EVENT_RUN_RESULT, {
       passed: result.passed,
       resultLines: result.resultLines,
@@ -226,24 +243,19 @@ export class HangarScene extends BaseGridScene {
     if (!alive()) return;
 
     this.cutsceneDialogue?.hide();
-
-    // Trigger progression now that animations are done.
     if (result.passed) {
       this.game.events.emit(EVENT_RUN_RESULT, { passed: true, manualAdvance: false });
     }
   }
 
-  private async runExchangeAnimations(
-    result: HangarClassTestResult,
-    alive: () => boolean,
-  ): Promise<void> {
+  private async runExchangeAnimations(result: HangarClassTestResult, alive: () => boolean): Promise<void> {
     const correctDelta = this.config.trustMeter?.correctDelta ?? 20;
     const wrongDelta = this.config.trustMeter?.wrongDelta ?? -10;
     let currentTrust = this.config.trustMeter?.initialValue ?? 50;
 
     const alienPos = this.config.speakerAlienPosition;
     const bubbleX = alienPos ? alienPos.col * TILE_SIZE + TILE_SIZE / 2 : GAME_W / 2;
-    const bubbleY = alienPos ? alienPos.row * TILE_SIZE - 8 : GAME_H / 3;
+    const bubbleY = alienPos ? alienPos.row * TILE_SIZE - 36 : GAME_H / 3;
 
     for (const ex of result.exchangeResults) {
       const bubble = new SpeechBubble({
@@ -262,8 +274,10 @@ export class HangarScene extends BaseGridScene {
       if (!alive()) return;
 
       if (ex.correct) {
+        this.setAlienState("idle");
         this.cutsceneDialogue?.show("TRANSLATOR", ex.actual ?? "");
       } else {
+        this.setAlienState("angry");
         this.shakeHero();
         this.trustMeter?.flash();
       }
@@ -290,21 +304,49 @@ export class HangarScene extends BaseGridScene {
       ease: "Linear",
       yoyo: true,
       repeat: 2,
-      onComplete: () => { this.character.x = baseX; },
+      onComplete: () => {
+        this.character.x = baseX;
+      },
     });
   }
 
-  // ── Reset ───────────────────────────────────────────────────────────────────
-
+  /* Reset */
   private resetPuzzle(): void {
     this.exchangeRunId++;
-    if (this.activeBubble) { this.activeBubble.destroy(); this.activeBubble = undefined; }
+    if (this.activeBubble) {
+      this.activeBubble.destroy();
+      this.activeBubble = undefined;
+    }
     this.cutsceneDialogue?.hide();
     this.trustMeter?.setValue(this.config.trustMeter?.initialValue ?? 50);
+    this.setAlienState("idle");
   }
 
-  // ── Utilities ───────────────────────────────────────────────────────────────
+  /* Alien State */
+  private setAlienState(state: AlienState): void {
+    for (const [alienId, sprite] of this.alienSprites) {
+      switch (state) {
+        case "spawn":
+          sprite.setVisible(true);
+          sprite.once("animationcomplete", () => sprite.play(`${alienId}-idle`));
+          sprite.play(`${alienId}-spawn`);
+          break;
+        case "idle":
+        case "angry":
+          if (sprite.visible) sprite.play(`${alienId}-${state}`);
+          break;
+        case "depart": {
+          const animDuration = 1000;
+          sprite.once("animationcomplete", () => sprite.setVisible(false));
+          this.tweens.add({ targets: sprite, alpha: 0, duration: animDuration, ease: "Linear" });
+          sprite.play(`${alienId}-depart`);
+          break;
+        }
+      }
+    }
+  }
 
+  /* Utilities */
   private delay(ms: number): Promise<void> {
     return sceneDelay(this, ms);
   }

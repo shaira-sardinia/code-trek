@@ -209,6 +209,15 @@ export function isBridgeLevelConfig(entry: ProgressionEntry): entry is BridgeLev
 
 // ----------------------------------------------------------------
 
+export type AlienState = "spawn" | "idle" | "angry" | "depart";
+
+export interface AlienPlaceholder {
+  col: number;
+  row: number;
+  facing: Direction;
+  alienId: string;
+}
+
 export interface HangarLevelConfig extends ProgressionEntry {
   sceneKey: "HangarScene";
   tilemapKey: string;
@@ -225,7 +234,7 @@ export interface HangarLevelConfig extends ProgressionEntry {
     characterId: string;
   };
 
-  alienPlaceholders?: Array<{ col: number; row: number; facing: Direction }>;
+  alienPlaceholders?: AlienPlaceholder[];
 
   trustMeter?: {
     initialValue?: number;

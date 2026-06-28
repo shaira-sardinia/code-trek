@@ -1,4 +1,4 @@
-import type { NPCPlacement, LevelGroup } from "../levels/types";
+import type { NPCPlacement, LevelGroup, AlienPlaceholder, AlienState } from "../levels/types";
 import type { LogbookContent } from "../ui/LogbookOverlay";
 import type { AppearanceName } from "../characters/registry";
 import type { Direction } from "../core/GameAPI";
@@ -15,7 +15,8 @@ export type CutsceneStep =
   | { type: "fade-to-white"; duration?: number }
   | { type: "fade-from-white"; duration?: number }
   | { type: "npc-move"; characterId: string; direction: Direction; times?: number }
-  | { type: "npc-face"; characterId: string; direction: Direction };
+  | { type: "npc-face"; characterId: string; direction: Direction }
+  | { type: "aliens-state"; state: AlienState };
 
 export interface CutsceneCompanion {
   /** The character the script controls (lead). */
@@ -36,7 +37,7 @@ export interface CutsceneConfig {
   tilemapKey: string;
   startPosition: { col: number; row: number };
   startFacing: "up" | "down" | "left" | "right";
-  alienPlaceholders?: { col: number; row: number; facing: Direction }[];
+  alienPlaceholders?: AlienPlaceholder[];
   introPosition?: { col: number; row: number };
   introWalk?: Array<{ facing: Direction; steps: number }>;
   appearance?: AppearanceName;

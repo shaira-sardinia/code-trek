@@ -50,13 +50,13 @@ export const canteenResolution: CutsceneConfig = {
     {
       type: "dialogue",
       speaker: "KIRA",
-      text: "That compound.. it's not just contamination. It's a binding agent. Once it gets into the ship's water reclamation system, it gums up the entire flow.",
-      duration: 6000,
+      text: "That compound is a binding agent. Once it gets into the ship's water reclamation system, it could cause serious trouble.",
+      duration: 5000,
     },
     {
       type: "dialogue",
       speaker: "KIRA",
-      text: "You need to get to Engineering. Now. Tell them what we know.",
+      text: "You need to get to Engineering now. Tell them what we know.",
       duration: 4000,
     },
     { type: "wait", duration: 600 },

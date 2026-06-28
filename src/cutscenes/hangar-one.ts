@@ -33,13 +33,13 @@ export const hangarOneCutscene: CutsceneConfig = {
     {
       type: "dialogue",
       speaker: "Captain Quark",
-      text: "They've assembled a... rough dictionary. It's limited but it may help us speak with them.",
+      text: "They've assembled a... rough dictionary.",
       duration: 4500,
     },
     {
       type: "dialogue",
       speaker: "Captain Quark",
-      text: "Combined with our communicator, we should have something. Enough to begin at least.",
+      text: "It's limited but combined with our communicator, we should have enough to speak with them.",
       duration: 4000,
     },
     {
