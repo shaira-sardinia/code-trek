@@ -22,8 +22,12 @@ export class LevelManager {
     this.currentIndex = startIndex;
   }
 
-  getLogbookContent(): LogbookContent | null { return this.logbookContent; }
-  setLogbookContent(content: LogbookContent): void { this.logbookContent = content; }
+  getLogbookContent(): LogbookContent | null {
+    return this.logbookContent;
+  }
+  setLogbookContent(content: LogbookContent): void {
+    this.logbookContent = content;
+  }
 
   getSelectedHero(): string {
     return this.selectedHeroId;
@@ -58,7 +62,6 @@ export class LevelManager {
     return allEntries[this.currentIndex];
   }
 
-  // Convenience cast for gameplay scenes — only call when the current entry is a LevelConfig.
   getCurrentLevel(): LevelConfig {
     return allEntries[this.currentIndex] as LevelConfig;
   }

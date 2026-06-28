@@ -275,24 +275,11 @@ export class TransmissionPanel {
   show(): void {
     if (this.state !== "hidden") return;
     this.miniHitZone.setVisible(true);
-
     this.container.setPosition(MINI_X, MINI_Y);
     this.container.setScale(MINI_SCALE);
     this.container.setVisible(true);
     this.state = "animating";
-
-    this.scene.tweens.add({
-      targets: this.container,
-      x: OPEN_X,
-      y: OPEN_Y,
-      scaleX: 1,
-      scaleY: 1,
-      duration: ANIM_DURATION,
-      ease: "Sine.easeInOut",
-      onComplete: () => {
-        this.state = "open";
-      },
-    });
+    this.animateToOpen();
   }
 
   setOnOpen(cb: () => void): void {
@@ -305,23 +292,10 @@ export class TransmissionPanel {
     this.state = "animating";
     this.miniIcon.setVisible(false);
     this.miniHitZone.setVisible(false);
-
     this.container.setPosition(MINI_X, MINI_Y);
     this.container.setScale(MINI_SCALE);
     this.container.setVisible(true);
-
-    this.scene.tweens.add({
-      targets: this.container,
-      x: OPEN_X,
-      y: OPEN_Y,
-      scaleX: 1,
-      scaleY: 1,
-      duration: ANIM_DURATION,
-      ease: "Sine.easeInOut",
-      onComplete: () => {
-        this.state = "open";
-      },
-    });
+    this.animateToOpen();
   }
 
   minimise(): void {
@@ -350,6 +324,21 @@ export class TransmissionPanel {
     this.container.destroy(true);
     this.miniIcon.destroy();
     this.miniHitZone.destroy();
+  }
+
+  private animateToOpen(): void {
+    this.scene.tweens.add({
+      targets: this.container,
+      x: OPEN_X,
+      y: OPEN_Y,
+      scaleX: 1,
+      scaleY: 1,
+      duration: ANIM_DURATION,
+      ease: "Sine.easeInOut",
+      onComplete: () => {
+        this.state = "open";
+      },
+    });
   }
 
   private refreshCombined(): void {

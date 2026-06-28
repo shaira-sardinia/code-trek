@@ -32,7 +32,7 @@ export const bridgeBetween: CutsceneConfig = {
   ],
 
   steps: [
-    { type: "wait", duration: 3500 },
+    { type: "wait", duration: 1500 },
 
     { type: "dialogue", speaker: "Captain Quark", text: "Good. Each station accounted for.", duration: 3000 },
     {

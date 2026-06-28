@@ -14,7 +14,7 @@ export const allCharacters: CharacterConfig[] = [
         idleSpritesheetKey: "hero-1-idle",
         frameWidth: 36,
         walkFrameHeight: 44,
-        idleFrameHeight: 56,
+        idleFrameHeight: 48,
       },
     },
   },

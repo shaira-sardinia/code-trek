@@ -9,11 +9,12 @@ export const transmitterCutscene: CutsceneConfig = {
   startPosition: { col: 9, row: 2 },
   startFacing: "left",
   steps: [
+    { type: "fade-from-white", duration: 800 },
     { type: "wait", duration: 800 },
     {
       type: "dialogue",
       speaker: "TRANSMITTER",
-      text: "Crew member AXH05, report to the canteen at the start of working hours.",
+      text: "Crew member, report to the canteen at the start of working hours.",
       duration: 3000,
     },
     { type: "wait", duration: 400 },
