@@ -26,6 +26,7 @@ import type { Editor } from "../ui/Editor";
 import type { Typewriter } from "../ui/Typewriter";
 import type { Toolbar } from "../ui/Toolbar";
 import type { ConsolePanel } from "../ui/ConsolePanel";
+import type { MetaControls } from "../ui/MetaControls";
 
 export interface SceneRouterContext {
   game: Phaser.Game;
@@ -36,6 +37,7 @@ export interface SceneRouterContext {
   consolePanel: ConsolePanel;
   dialogueTextEl: HTMLElement;
   skipButton: HTMLElement | null;
+  metaControls?: MetaControls;
 }
 
 export class SceneRouter {
@@ -53,8 +55,6 @@ export class SceneRouter {
   public start(): void {
     this.ctx.levelManager.on("level-changed", (entry) => this.handleLevelChanged(entry));
   }
-
-  // ── State accessors for Transitions and devPanel ────────────────────────────
 
   public getActiveSceneKey(): string {
     return this.activeSceneKey;
@@ -88,9 +88,8 @@ export class SceneRouter {
     return scene?.getPlayerPixelPos?.() ?? { x: GAME_W / 2, y: GAME_H / 2 };
   }
 
-  // ── Event dispatch ──────────────────────────────────────────────────────────
-
   private handleLevelChanged(entry: ProgressionEntry): void {
+    this.ctx.metaControls?.show();
     this.ctx.consolePanel.clear();
 
     if (this.currentLevelGroup !== entry.levelGroup) {
@@ -119,8 +118,6 @@ export class SceneRouter {
 
     this.currentLevelGroup = entry.levelGroup;
   }
-
-  // ── Scene activation ────────────────────────────────────────────────────────
 
   private activateCutscene(entry: CutsceneConfig): void {
     const { game, levelManager, editor, typewriter, toolbar, dialogueTextEl, skipButton } = this.ctx;
@@ -253,8 +250,6 @@ export class SceneRouter {
       this.activeSceneKey = entry.sceneKey;
     }
   }
-
-  // Internal helpers
 
   private consumePendingSeamlessEntry(): boolean {
     const val = this.pendingSeamlessEntry;

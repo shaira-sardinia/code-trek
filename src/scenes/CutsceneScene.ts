@@ -30,7 +30,6 @@ export class CutsceneScene extends BaseGridScene {
   private animatedNpcList: AnimatedNPC[] = [];
   private seamlessEntry = false;
 
-  // Companion lead sprite (present when config.companion is set).
   private leadSprite?: Phaser.GameObjects.Sprite;
   private leadPosition?: { col: number; row: number };
   private leadCharacterConfig?: CharacterConfig;
@@ -40,7 +39,6 @@ export class CutsceneScene extends BaseGridScene {
   private whiteOverlay: Phaser.GameObjects.Graphics | null = null;
   private npcPositions: Map<string, { col: number; row: number }> = new Map();
 
-  // Incremented to cancel any in-progress script iteration.
   private runId = 0;
 
   constructor() {
@@ -57,7 +55,8 @@ export class CutsceneScene extends BaseGridScene {
     this.applySeamlessEntry(this.seamlessEntry);
 
     if (this.config.companion) {
-      const { leadCharacterId, leadStartPosition, leadStartFacing, followerOffset, followerCharacterId } = this.config.companion;
+      const { leadCharacterId, leadStartPosition, leadStartFacing, followerOffset, followerCharacterId } =
+        this.config.companion;
       this.characterFacing = leadStartFacing;
       this.loadMap(this.config.tilemapKey);
       const heroPos = {
@@ -141,15 +140,24 @@ export class CutsceneScene extends BaseGridScene {
     this.events.on("shutdown", () => {
       this.runId++;
       this.dialogue.destroy();
-      if (this.logbook) { this.logbook.destroy(); this.logbook = null; }
-      if (this.whiteOverlay) { this.whiteOverlay.destroy(); this.whiteOverlay = null; }
+      if (this.logbook) {
+        this.logbook.destroy();
+        this.logbook = null;
+      }
+      if (this.whiteOverlay) {
+        this.whiteOverlay.destroy();
+        this.whiteOverlay = null;
+      }
       for (const npc of this.animatedNpcList) npc.destroy();
       this.animatedNpcList = [];
       this.clearNpcs();
       this.npcPositions.clear();
       for (const s of this.alienSprites.values()) s.destroy();
       this.alienSprites = new Map();
-      if (this.leadSprite) { this.leadSprite.destroy(); this.leadSprite = undefined; }
+      if (this.leadSprite) {
+        this.leadSprite.destroy();
+        this.leadSprite = undefined;
+      }
       this.leadPosition = undefined;
       this.leadCharacterConfig = undefined;
       this.leadCharacterAppearance = undefined;
@@ -194,9 +202,7 @@ export class CutsceneScene extends BaseGridScene {
 
       case "turn":
         this.setCharacterFacing(
-          step.direction === "left"
-            ? rotateLeft(this.characterFacing)
-            : rotateRight(this.characterFacing),
+          step.direction === "left" ? rotateLeft(this.characterFacing) : rotateRight(this.characterFacing),
         );
         return Promise.resolve();
 
@@ -249,10 +255,18 @@ export class CutsceneScene extends BaseGridScene {
         const times = step.times ?? 1;
         const delta = { col: 0, row: 0 };
         switch (step.direction) {
-          case "up":    delta.row = -times; break;
-          case "down":  delta.row = +times; break;
-          case "left":  delta.col = -times; break;
-          case "right": delta.col = +times; break;
+          case "up":
+            delta.row = -times;
+            break;
+          case "down":
+            delta.row = +times;
+            break;
+          case "left":
+            delta.col = -times;
+            break;
+          case "right":
+            delta.col = +times;
+            break;
         }
         const targetPos = { col: pos.col + delta.col, row: pos.row + delta.row };
         const charConfig = getCharacterById(entry.charId);
@@ -295,8 +309,6 @@ export class CutsceneScene extends BaseGridScene {
     }
   }
 
-  // ── Companion mechanic ──────────────────────────────────────────────────────
-
   private placeFollower(pos: { col: number; row: number }, characterId: string): void {
     const charConfig = getCharacterById(characterId);
     if (!charConfig) throw new Error(`Follower character not found: ${characterId}`);
@@ -305,7 +317,12 @@ export class CutsceneScene extends BaseGridScene {
     this.activeAppearanceName = "default";
     this.activeAppearance = getAppearance(charConfig, "default");
     const { x, y } = this.charPixelPos(pos);
-    this.character = this.add.sprite(x, y, this.activeAppearance.idleSpritesheetKey, idleFrameForFacing(this.characterFacing));
+    this.character = this.add.sprite(
+      x,
+      y,
+      this.activeAppearance.idleSpritesheetKey,
+      idleFrameForFacing(this.characterFacing),
+    );
     this.character.setScale(3);
     this.character.setOrigin(0.5, 1);
     this.character.setDepth(y);
@@ -318,7 +335,12 @@ export class CutsceneScene extends BaseGridScene {
     this.leadCharacterAppearance = getAppearance(charConfig, "default");
     this.leadPosition = { ...pos };
     const { x, y } = this.npcPixelPos(pos, this.leadCharacterAppearance);
-    this.leadSprite = this.add.sprite(x, y, this.leadCharacterAppearance.idleSpritesheetKey, idleFrameForFacing(facing));
+    this.leadSprite = this.add.sprite(
+      x,
+      y,
+      this.leadCharacterAppearance.idleSpritesheetKey,
+      idleFrameForFacing(facing),
+    );
     this.leadSprite.setScale(3);
     this.leadSprite.setOrigin(0.5, 1);
     this.leadSprite.setDepth(y);
@@ -333,7 +355,13 @@ export class CutsceneScene extends BaseGridScene {
 
   private async walkCompanionForward(times: number): Promise<void> {
     const { companion } = this.config;
-    if (!companion || !this.leadSprite || !this.leadPosition || !this.leadCharacterConfig || !this.leadCharacterAppearance) {
+    if (
+      !companion ||
+      !this.leadSprite ||
+      !this.leadPosition ||
+      !this.leadCharacterConfig ||
+      !this.leadCharacterAppearance
+    ) {
       return this.walkForward(times);
     }
 
@@ -377,7 +405,10 @@ export class CutsceneScene extends BaseGridScene {
 
     if (this.leadSprite && this.leadCharacterAppearance) {
       this.leadSprite.stop();
-      this.leadSprite.setTexture(this.leadCharacterAppearance.idleSpritesheetKey, idleFrameForFacing(this.characterFacing));
+      this.leadSprite.setTexture(
+        this.leadCharacterAppearance.idleSpritesheetKey,
+        idleFrameForFacing(this.characterFacing),
+      );
     }
     this.character.stop();
     this.character.setTexture(this.activeAppearance.idleSpritesheetKey, idleFrameForFacing(this.characterFacing));

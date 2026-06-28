@@ -170,8 +170,10 @@ export class CanteenScene extends BaseGridScene {
   private playDeliveryEffect(pos: TileCoord, facing: Direction, success: boolean): Promise<void> {
     return new Promise<void>((resolve) => {
       const deltas: Record<Direction, { col: number; row: number }> = {
-        up: { col: 0, row: -1 }, down: { col: 0, row: 1 },
-        left: { col: -1, row: 0 }, right: { col: 1, row: 0 },
+        up: { col: 0, row: -1 },
+        down: { col: 0, row: 1 },
+        left: { col: -1, row: 0 },
+        right: { col: 1, row: 0 },
       };
       const d = deltas[facing];
       const { x, y } = tileToPixel({ col: pos.col + d.col, row: pos.row + d.row });
@@ -185,7 +187,10 @@ export class CanteenScene extends BaseGridScene {
         scaleY: 2,
         duration: 500,
         ease: "Sine.easeOut",
-        onComplete: () => { circle.destroy(); resolve(); },
+        onComplete: () => {
+          circle.destroy();
+          resolve();
+        },
       });
     });
   }
@@ -203,9 +208,14 @@ export class CanteenScene extends BaseGridScene {
     const map = this.currentLevel.suspectOrderToTableMap;
     if (!map) return;
 
-    // Collect unique NPCs from the map
     const seen = new Set<string>();
-    const entries: Array<{ id: string; sprite: Phaser.GameObjects.Sprite; charId: string; appearanceName: string; exitTile: { col: number; row: number } }> = [];
+    const entries: Array<{
+      id: string;
+      sprite: Phaser.GameObjects.Sprite;
+      charId: string;
+      appearanceName: string;
+      exitTile: { col: number; row: number };
+    }> = [];
     for (const { suspectNpcId, exitTile } of Object.values(map)) {
       if (seen.has(suspectNpcId)) continue;
       seen.add(suspectNpcId);
@@ -214,41 +224,46 @@ export class CanteenScene extends BaseGridScene {
     }
     if (entries.length === 0) return;
 
-    // Kill bob tweens and jitter all simultaneously
-    await Promise.all(entries.map(({ sprite }) => {
-      this.tweens.killTweensOf(sprite);
-      const origX = sprite.x;
-      return new Promise<void>((resolve) => {
-        this.tweens.add({
-          targets: sprite,
-          x: origX + 4,
-          duration: 70,
-          yoyo: true,
-          repeat: 5,
-          ease: "Sine.easeInOut",
-          onComplete: () => { sprite.x = origX; resolve(); },
+    await Promise.all(
+      entries.map(({ sprite }) => {
+        this.tweens.killTweensOf(sprite);
+        const origX = sprite.x;
+        return new Promise<void>((resolve) => {
+          this.tweens.add({
+            targets: sprite,
+            x: origX + 4,
+            duration: 70,
+            yoyo: true,
+            repeat: 5,
+            ease: "Sine.easeInOut",
+            onComplete: () => {
+              sprite.x = origX;
+              resolve();
+            },
+          });
         });
-      });
-    }));
+      }),
+    );
 
-    // Start walk animation and flee to each NPC's exit tile simultaneously
-    await Promise.all(entries.map(({ id, sprite, charId, appearanceName, exitTile }) => {
-      const { x: exitX } = tileToPixel(exitTile);
-      sprite.play(walkAnimKey(charId, appearanceName as AppearanceName, "left"));
-      return new Promise<void>((resolve) => {
-        this.tweens.add({
-          targets: sprite,
-          x: exitX,
-          duration: 1200,
-          ease: "Sine.easeIn",
-          onComplete: () => {
-            sprite.destroy();
-            this.npcSpriteMap.delete(id);
-            resolve();
-          },
+    await Promise.all(
+      entries.map(({ id, sprite, charId, appearanceName, exitTile }) => {
+        const { x: exitX } = tileToPixel(exitTile);
+        sprite.play(walkAnimKey(charId, appearanceName as AppearanceName, "left"));
+        return new Promise<void>((resolve) => {
+          this.tweens.add({
+            targets: sprite,
+            x: exitX,
+            duration: 1200,
+            ease: "Sine.easeIn",
+            onComplete: () => {
+              sprite.destroy();
+              this.npcSpriteMap.delete(id);
+              resolve();
+            },
+          });
         });
-      });
-    }));
+      }),
+    );
 
     await this.waitFor(500);
   }

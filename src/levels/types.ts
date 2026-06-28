@@ -44,9 +44,6 @@ export interface LevelConfig extends ProgressionEntry {
 export function isLevelConfig(entry: ProgressionEntry): entry is LevelConfig {
   return "maxCommands" in entry;
 }
-
-// ----------------------------------------------------------------
-
 export interface NPCPlacement {
   characterId: string;
   position: TileCoord;
@@ -68,9 +65,14 @@ export interface CanteenLevelConfig extends ProgressionEntry {
   logbookContent?: LogbookContent;
   introPosition?: TileCoord;
   introWalk?: Array<{ facing: Direction; steps: number }>;
-  serveTiles?: { table: number; position: TileCoord; facing: Direction; walkTo?: Array<{ facing: Direction; steps: number }> }[];
+  serveTiles?: {
+    table: number;
+    position: TileCoord;
+    facing: Direction;
+    walkTo?: Array<{ facing: Direction; steps: number }>;
+  }[];
   orders?: { table: number; drink: string }[];
-  // Puzzle 2: investigation
+
   todaysOrders?: { orderNumber: number; items: string[] }[];
   possibleSuspiciousIngredients?: string[];
   suspectOrderNumbers?: number[];
@@ -82,8 +84,6 @@ export interface CanteenLevelConfig extends ProgressionEntry {
 export function isCanteenLevelConfig(entry: ProgressionEntry): entry is CanteenLevelConfig {
   return entry.sceneKey === "CanteenScene";
 }
-
-// ----------------------------------------------------------------
 
 export interface EngineeringLevelConfig extends ProgressionEntry {
   sceneKey: "EngineeringScene";
@@ -113,12 +113,10 @@ export interface EngineeringLevelConfig extends ProgressionEntry {
     dwellFacing?: Direction;
   }[];
 
-  // Sub-puzzle function testing (sub1, sub2)
   expectedFunctionName?: string;
   testCases?: { input: unknown; expected: unknown; label?: string }[];
   testDataGlobalName?: string;
 
-  // Sub-puzzle 3: calibration command-queue mode
   sensors?: { id: string; currentValue: number; minSafe: number; maxSafe: number }[];
   expectedRecalibrationIds?: string[];
 
@@ -132,9 +130,6 @@ export interface EngineeringLevelConfig extends ProgressionEntry {
 export function isEngineeringLevelConfig(entry: ProgressionEntry): entry is EngineeringLevelConfig {
   return entry.sceneKey === "EngineeringScene";
 }
-
-// ----------------------------------------------------------------
-
 export interface StationConfig {
   name: string;
   position: TileCoord;
@@ -206,9 +201,6 @@ export interface BridgeLevelConfig extends ProgressionEntry {
 export function isBridgeLevelConfig(entry: ProgressionEntry): entry is BridgeLevelConfig {
   return entry.sceneKey === "BridgeScene";
 }
-
-// ----------------------------------------------------------------
-
 export type AlienState = "spawn" | "idle" | "angry" | "depart";
 
 export interface AlienPlaceholder {
@@ -258,18 +250,21 @@ export function isHangarLevelConfig(entry: ProgressionEntry): entry is HangarLev
   return entry.sceneKey === "HangarScene";
 }
 
-// ----------------------------------------------------------------
-
 export const TOTAL_LEVELS = 4;
 
 export function getLevelNumber(group: LevelGroup): number | null {
   switch (group) {
-    case "canteen":        return 1;
-    case "engineering":    return 2;
-    case "bridge":         return 3;
+    case "canteen":
+      return 1;
+    case "engineering":
+      return 2;
+    case "bridge":
+      return 3;
     case "hangar-prelude":
     case "hangar":
-    case "end":            return 4;
-    default:               return null;
+    case "end":
+      return 4;
+    default:
+      return null;
   }
 }

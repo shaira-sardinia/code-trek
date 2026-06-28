@@ -25,9 +25,11 @@ import {
   EVENT_BOOT_COMPLETE,
   EVENT_LANDING_COMPLETE,
   EVENT_LANDING_CONTINUE,
+  EVENT_RETURN_TO_HOME,
   EVENT_RUN_CODE,
   EVENT_CLOSE_LOGBOOK,
 } from "./events";
+import { MetaControls } from "./ui/MetaControls";
 
 const levelManager = new LevelManager();
 
@@ -98,6 +100,10 @@ const consolePanel = new ConsolePanel(() => requestAnimationFrame(() => editor.l
 
 /* Module wiring */
 
+const metaControls = new MetaControls(() => {
+  game.events.emit(EVENT_RETURN_TO_HOME);
+});
+
 const sceneRouter = new SceneRouter({
   game,
   levelManager,
@@ -107,6 +113,7 @@ const sceneRouter = new SceneRouter({
   consolePanel,
   dialogueTextEl,
   skipButton,
+  metaControls,
 });
 sceneRouter.start();
 
@@ -174,7 +181,7 @@ function runLandingExitAnimation(callback: () => void): void {
   }, 1500);
 }
 
-game.events.once(EVENT_LANDING_COMPLETE, ({ heroId }: { heroId: string }) => {
+game.events.on(EVENT_LANDING_COMPLETE, ({ heroId }: { heroId: string }) => {
   levelManager.clearSavedData();
   Statistics.clearAll();
   levelManager.setSelectedHero(heroId);
@@ -183,7 +190,7 @@ game.events.once(EVENT_LANDING_COMPLETE, ({ heroId }: { heroId: string }) => {
   runLandingExitAnimation(() => transitions.seamlessSwitch(() => levelManager.reset()));
 });
 
-game.events.once(EVENT_LANDING_CONTINUE, () => {
+game.events.on(EVENT_LANDING_CONTINUE, () => {
   const loaded = levelManager.loadState();
   if (!loaded) {
     levelManager.clearSavedData();
@@ -193,6 +200,19 @@ game.events.once(EVENT_LANDING_CONTINUE, () => {
   }
 
   runLandingExitAnimation(() => transitions.seamlessSwitch(() => levelManager.reset()));
+});
+
+game.events.on(EVENT_RETURN_TO_HOME, () => {
+  const activeSceneKey = sceneRouter.getActiveSceneKey();
+  if (activeSceneKey && activeSceneKey !== "LandingScene") {
+    game.scene.stop(activeSceneKey);
+  }
+  document.getElementById("app")?.classList.add("landing-active");
+  game.scale.getParentBounds();
+  game.scale.refresh();
+  metaControls.hide();
+  game.scene.start("LandingScene", { levelManager });
+  sceneRouter.setActiveSceneKey("LandingScene");
 });
 
 /* Run button */

@@ -54,7 +54,7 @@ export class TransitionScene extends Phaser.Scene {
   private handleClose({ cx, cy, duration }: IrisEventData): void {
     this.tweens.killTweensOf(this.irisCircle);
     this.irisCircle.setPosition(cx, cy);
-    this.irisCircle.setScale(this.computeMaxScale(cx, cy)); // start fully open
+    this.irisCircle.setScale(this.computeMaxScale(cx, cy));
 
     this.tweens.add({
       targets: this.irisCircle,
@@ -68,7 +68,7 @@ export class TransitionScene extends Phaser.Scene {
   private handleOpen({ cx, cy, duration }: IrisEventData): void {
     this.tweens.killTweensOf(this.irisCircle);
     this.irisCircle.setPosition(cx, cy);
-    this.irisCircle.setScale(0); // start fully closed
+    this.irisCircle.setScale(0);
 
     this.tweens.add({
       targets: this.irisCircle,

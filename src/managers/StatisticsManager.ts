@@ -93,8 +93,6 @@ export class StatisticsManager {
     }
   }
 
-  // --- Per-puzzle attempts ---
-
   public recordAttempt(entryId: string): void {
     if (!this.data.perPuzzleAttempts[entryId]) {
       this.data.perPuzzleAttempts[entryId] = 0;
@@ -106,8 +104,6 @@ export class StatisticsManager {
   public getAttemptsFor(entryId: string): number {
     return this.data.perPuzzleAttempts[entryId] ?? 0;
   }
-
-  // --- Cheat tracking ---
 
   public recordCheatUsed(entryId: string): void {
     this.data.totalCheatsUsed++;
@@ -126,8 +122,6 @@ export class StatisticsManager {
   public getAllCheatsUsed(): { [entryId: string]: number } {
     return { ...this.data.cheatsByPuzzle };
   }
-
-  // --- Per-level time ---
 
   public startLevelTimer(levelGroup: string): void {
     if (this.data.currentLevelGroup !== null && this.data.currentLevelGroup !== levelGroup) {
@@ -167,8 +161,6 @@ export class StatisticsManager {
     return total;
   }
 
-  // --- Session-wide ---
-
   public getSessionStartedAt(): number {
     return this.data.sessionStartedAt;
   }
@@ -176,8 +168,6 @@ export class StatisticsManager {
   public getSessionDuration(): number {
     return Date.now() - this.data.sessionStartedAt;
   }
-
-  // --- Snapshot accessors ---
 
   public getAllAttempts(): PerPuzzleAttempts {
     return { ...this.data.perPuzzleAttempts };
@@ -191,8 +181,6 @@ export class StatisticsManager {
     }
     return result;
   }
-
-  // --- Reset ---
 
   public clearAll(): void {
     try {

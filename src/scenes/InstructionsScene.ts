@@ -17,7 +17,6 @@ export class InstructionsScene extends Phaser.Scene {
 
     this.add.rectangle(cx, cy, panelW, panelH, 0x111827).setStrokeStyle(2, 0x5580cc).setDepth(5);
 
-    // Close button
     const closeX = cx + panelW / 2 - 16;
     const closeY = top + 16;
     const closeBg = this.add.rectangle(closeX, closeY, 24, 24, 0x222840).setDepth(6);
@@ -81,14 +80,12 @@ export class InstructionsScene extends Phaser.Scene {
       y += 14;
     };
 
-    // ABOUT
     addSectionTitle("ABOUT");
     addBody("Code Trek teaches programming concepts");
     addBody("through an interactive space adventure.");
 
     addDivider();
 
-    // CREDITS
     addSectionTitle("CREDITS");
     y += 4;
 

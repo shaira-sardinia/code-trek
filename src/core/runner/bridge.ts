@@ -18,7 +18,6 @@ export interface BridgeRelayTestResult {
   consoleOutput: ConsoleEntry[];
 }
 
-// Console-capture only — no simulation or validation.
 export function runBridgeCode(code: string): BridgeRunResult {
   const consoleOutput: ConsoleEntry[] = [];
 
@@ -188,7 +187,7 @@ export function runBridgeRelayTest(
     }
   }
 
-  // Execute the method-call sequence
+  /* Execute the method-call sequence */
   const callErrors: string[] = [];
   for (const call of sequence.methodCalls) {
     const instance = instances[call.instanceName];
