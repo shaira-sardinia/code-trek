@@ -133,6 +133,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
+.wrangler
 .DS_Store
 .idea/
 /*.md
