@@ -78,6 +78,10 @@ export const bridgeOne: BridgeLevelConfig = {
 
   }
 }
+
+// Create instances
+
+// Call method on each instance
 `,
 
   solutionCode: `class CrewStation {
